@@ -19,30 +19,30 @@ test('积分仅本人可读，未登录不能查询或绑定，客户端不能�
   const result = await main({ action: 'getPointsViewData', payload: { userId: inviter, operatorId: inviter } })
   assert.equal(result.data.balance, 0)
   await main({ action: 'bindInviteCode', payload: { inviteCode: code, userId: inviter, operatorId: inviter, amount: 9999 } })
-  assert.equal(state.collections.get('app_user').get(member).point_balance, 100)
-  assert.equal(state.collections.get('app_user').get(inviter).point_balance, 700)
+  assert.equal(state.collections.get('app_user').get(member).point_balance || 0, 0)
+  assert.equal(state.collections.get('app_user').get(inviter).point_balance, 600)
   context.OPENID = 'guest'
   for (const action of ['getPointsViewData', 'bindInviteCode']) assert.equal((await main({ action })).code, 'LOGIN_REQUIRED')
 })
 
-test('绑定成功双方各100分，大小写空格兼容，原码重试不重复奖励', async () => {
+test('绑定不赠分，大小写空格兼容，原码重试不重复绑定', async () => {
   const { state, main, context, inviter, member, code } = await fixture()
   state.transactionEnvelope = true
   const result = await main({ action: 'bindInviteCode', payload: { inviteCode: ' ' + code.toLowerCase() + ' ' } })
   assert.equal(result.success, true)
-  assert.equal(result.data.balance, 100)
+  assert.equal(result.data.balance, 0)
   assert.equal((await main({ action: 'bindInviteCode', payload: { inviteCode: code } })).data.repeated, true)
-  assert.equal(state.collections.get('user_point_log').size, 2)
-  assert.equal(state.collections.get('app_user').get(member).point_balance, 100)
-  assert.equal(state.collections.get('app_user').get(inviter).point_balance, 100)
+  assert.equal(state.collections.get('user_point_log').size, 0)
+  assert.equal(state.collections.get('app_user').get(member).point_balance || 0, 0)
+  assert.equal(state.collections.get('app_user').get(inviter).point_balance || 0, 0)
   let view = (await main({ action: 'getPointsViewData' })).data
   assert.equal(view.bound, true)
   assert.equal(view.boundCode, code)
-  assert.equal(view.records[0].title, '填写邀请码奖励')
+  assert.equal(view.records.length, 0)
   context.OPENID = 'inviter'
   view = (await main({ action: 'getPointsViewData' })).data
   assert.equal(view.inviteCode, code)
-  assert.equal(view.records[0].title, '邀请好友奖励')
+  assert.equal(view.records.length, 0)
 })
 
 test('格式错误、不存在、自邀、已绑定和停用邀请人都有具体失败原因', async () => {
@@ -60,25 +60,6 @@ test('格式错误、不存在、自邀、已绑定和停用邀请人都有具�
   context.OPENID = 'inviter'
   state.collections.get('app_user').get(inviter).status = 0
   assert.equal((await main({ action: 'getPointsViewData' })).code, 'LOGIN_REQUIRED')
-})
-
-test('第二条积分明细保存失败，双方余额、关系和第一条明细全部回滚', async () => {
-  const { state, main, inviter, member, code } = await fixture()
-  const collection = state.db.collection
-  state.db.collection = name => {
-    const query = collection(name)
-    if (name !== 'user_point_log') return query
-    return { ...query, doc(id) { const doc = query.doc(id); return { ...doc, set: async args => { if (id.endsWith('_INVITE')) throw new Error('database write failed'); return doc.set(args) } } } }
-  }
-  const result = await main({ action: 'bindInviteCode', payload: { inviteCode: code } })
-  assert.equal(result.success, false)
-  assert.doesNotMatch(result.message, /database|数据库/)
-  assert.equal(state.collections.get('app_user').get(member).invited_by, undefined)
-  assert.equal(state.collections.get('app_user').get(member).point_balance, undefined)
-  assert.equal(state.collections.get('app_user').get(inviter).point_balance, undefined)
-  assert.equal(state.collections.get('user_point_log').size, 0)
-  state.db.collection = collection
-  assert.equal((await main({ action: 'bindInviteCode', payload: { inviteCode: code } })).success, true)
 })
 
 test('积分明细读取失败不显示伪造的零余额或泄露底层报错', async () => {

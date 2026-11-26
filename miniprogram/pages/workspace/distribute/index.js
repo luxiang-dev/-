@@ -60,7 +60,7 @@ function normalizePageData(pageData, fallbackStore) {
 Page(withPageState({
   data: {
     runtime: {},
-    submitting: false,
+    submitting: false, pendingDistribution: null,
     pageData: {},
     keyword: '',
     selectedMemberId: '',
@@ -134,7 +134,7 @@ Page(withPageState({
       const normalizedPageData = normalizePageData(pageData, runtime.currentStore)
       app.setViewCache(buildDistributeCacheKey(runtime, this.data.keyword), normalizedPageData)
       this.setData({
-        runtime,
+        runtime, pendingDistribution: wx.getStorageSync('distribution-pending:'+runtime.userProfile.id)||null,
         pageData: normalizedPageData,
         searching: false,
       })
@@ -145,7 +145,7 @@ Page(withPageState({
       }
       this.setData({ pageError: getUserMessage(error, "加载失败，请重试") })
       this.setData({
-        runtime,
+        runtime, pendingDistribution: wx.getStorageSync('distribution-pending:'+runtime.userProfile.id)||null,
         pageData: normalizePageData(app.getViewCache(buildDistributeCacheKey(runtime, this.data.keyword)) || app.getDistributePageData(this.data.keyword), runtime.currentStore),
         searching: false,
       })
@@ -268,7 +268,23 @@ Page(withPageState({
     this.setData({ remark: event.detail.value })
   },
 
+  async onRetryDistribution() {
+    if(this.data.submitting||!this.data.pendingDistribution)return
+    this.setData({submitting:true})
+    const owner=this.data.runtime.userProfile.id,key='distribution-pending:'+owner
+    try{
+      const runtime=await getApp().getRuntimeSnapshotAsync({force:true})
+      if(!runtime.isAuthenticated||runtime.userProfile.id!==owner)throw Error('账号已变化，请重新登录')
+      await businessApi.distributeAsset(this.data.pendingDistribution)
+      wx.removeStorageSync(key);this.setData({pendingDistribution:null})
+      getApp().removeViewCacheByPrefix('profile:');getApp().removeViewCacheByPrefix('workspace:')
+      showFeedback({title:'操作已完成',icon:'success'});await this.syncPageData()
+    }catch(e){if(['INVALID_DISTRIBUTION_PAYLOAD','PACKAGE_NOT_AVAILABLE','USER_NOT_AVAILABLE','STORE_NOT_AVAILABLE','INVALID_EXPIRY_DATE','INVALID_AMOUNT'].includes(e.code)){wx.removeStorageSync(key);this.setData({pendingDistribution:null})}showFeedback({title:getUserMessage(e),icon:'none'})}
+    finally{this.setData({submitting:false})}
+  },
   async onSubmit() {
+    if(this.data.pendingDistribution){await this.onRetryDistribution();return}
+
     if (this.data.submitting || this.data.pageError || this.data.pageBusy) return
     if (!this.data.selectedMemberId || !this.data.selectedPackageId) {
       showFeedback({ title: '请先选择学员和套餐', icon: 'none' })
@@ -314,7 +330,7 @@ Page(withPageState({
         let result = null
 
         try {
-          const cloudResult = await businessApi.distributeAsset({
+          const pendingPayload = {
             userId: localPayload.memberId,
             storeId: snapshot.storeId || runtime.currentStore.id,
             packageId: localPayload.packageId,
@@ -323,13 +339,19 @@ Page(withPageState({
             offlineAmount: localPayload.amount,
             payType: localPayload.payType,
             remark: localPayload.remark,
-          })
+            requestId:'distribution_'+Date.now()+'_'+Math.random().toString(36).slice(2),
+          }
+          const pendingKey='distribution-pending:'+runtime.userProfile.id
+          wx.setStorageSync(pendingKey,pendingPayload);this.setData({pendingDistribution:pendingPayload})
+          const cloudResult = await businessApi.distributeAsset(pendingPayload)
+          wx.removeStorageSync(pendingKey);this.setData({pendingDistribution:null})
           result = {
             ok: true,
             expiry: cloudResult && cloudResult.expiryDate || preview.expiry,
             message: '已为' + member.nickname + '派发 ' + targetPackage.lessons + ' 节' + targetPackage.typeLabel,
           }
         } catch (error) {
+          if(['INVALID_DISTRIBUTION_PAYLOAD','PACKAGE_NOT_AVAILABLE','USER_NOT_AVAILABLE','STORE_NOT_AVAILABLE','INVALID_EXPIRY_DATE','INVALID_AMOUNT'].includes(error.code)){wx.removeStorageSync('distribution-pending:'+runtime.userProfile.id);this.setData({pendingDistribution:null})}
           result = { ok: false, message: getUserMessage(error, "派发失败，请重试") }
         }
 

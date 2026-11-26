@@ -1,11 +1,10 @@
 <wxs module="i18n" src="../../utils/i18n.wxs" />
-<view class="page-shell locale-page locale-{{language}}">
+<view class="page-shell locale-page locale-{{language}} booking-page">
   <page-feedback language="{{language}}" loading="{{pageBusy}}" error="{{pageError}}" bindretry="onRetry"></page-feedback>
   <view class="page-header art-header">
-    <image class="art-header-photo" src="/images/backgrounds/gym-header.jpg" mode="aspectFill" aria-hidden="true"></image>
+    <image class="art-header-photo" src="{{filters.type === 'private' ? '/images/backgrounds/training-private.jpg' : '/images/backgrounds/gym-header.jpg'}}" mode="aspectFill" aria-hidden="true"></image>
     <view class="art-header-shade"></view>
     <view class="art-header-content">
-    <view class="eyebrow">{{i18n.f('安排下一次训练', [], language)}}</view>
     <view class="headline-row booking-title-row">
       <view class="page-title">{{i18n.f('训练预约', [], language)}}</view>
       <view class="store-badge" bindtap="onOpenStorePicker">{{runtime.currentStore.name}} ⌄</view>
@@ -14,49 +13,44 @@
     </view>
   </view>
 
-  <view class="card">
+  <view class="card booking-controls">
     <view class="booking-type-switch">
       <view class="booking-type-tab {{pageData.filters.type === 'group' ? 'active' : ''}}" data-type="group" bindtap="onTypeChange">{{i18n.f('团体训练', [], language)}}</view>
       <view class="booking-type-tab {{pageData.filters.type === 'private' ? 'active' : ''}}" data-type="private" bindtap="onTypeChange">{{i18n.f('专属训练', [], language)}}</view>
     </view>
 
-    <view wx:if="{{filters.type === 'group'}}" class="headline-row booking-filter-row">
-      <view class="coach-filter-trigger {{pageData.filters.coachId !== 'all' ? 'active' : ''}}" bindtap="onOpenCoachPicker">
-        <text class="coach-filter-label">{{pageData.filters.coachId === 'all' ? i18n.t('全部人员', language) : pageData.selectedCoachName}}</text>
-        <text class="coach-filter-arrow">></text>
-      </view>
-      <view class="booking-result-count">{{i18n.f('{0} 个场次', [pageData.resultCount], language)}}</view>
-    </view>
-
-    <scroll-view class="scroll-row date-scroll" scroll-x="true" show-scrollbar="false">
-      <view wx:for="{{pageData.dates}}" wx:key="key" class="date-card {{pageData.filters.dateKey === item.key ? 'active' : ''}}" data-date-key="{{item.key}}" bindtap="onDateChange">
+    <view wx:if="{{filters.type === 'group'}}" class="date-grid">
+      <view wx:for="{{pageData.dates}}" wx:key="key" class="date-card {{pageData.filters.dateKey === item.key ? 'active' : ''}}" data-date-key="{{item.key}}" bindtap="onDateChange" hover-class="tap-feedback">
         <view class="date-card-kicker">{{i18n.t(item.displayWeekday, language)}}</view>
         <view class="date-card-label">{{item.displayMonthDay}}</view>
       </view>
-    </scroll-view>
+    </view>
+
   </view>
 
   <view wx:if="{{filters.type === 'group'}}" class="booking-schedule-section">
-    <view class="booking-section-heading"><view class="section-title">{{i18n.f('可预约场次', [], language)}}</view><text class="booking-section-hint">{{i18n.f('选择适合你的时间', [], language)}}</text></view>
-    <view wx:if="{{!pageBusy && !pageError && pageData.schedules.length === 0}}" class="empty-state"><view class="empty-state-title">{{i18n.f('这一天还没有安排训练', [], language)}}</view><view class="empty-state-desc">{{i18n.f('试试其他日期，或切换门店和场馆人员。', [], language)}}</view><button class="secondary-button" bindtap="onResetFilters">{{i18n.f('查看今日全部场次', [], language)}}</button></view>
+    <view class="booking-section-heading"><view class="section-title">{{i18n.f('可预约场次', [], language)}}</view><text class="booking-result-count">{{i18n.f('{0} 个场次', [pageData.resultCount], language)}}</text></view>
+    <view wx:if="{{!pageBusy && !pageError && pageData.schedules.length === 0}}" class="empty-state">
+      <view class="empty-state-title">{{i18n.f('这一天还没有安排训练', [], language)}}</view>
+      <view class="empty-state-desc">{{i18n.f('试试其他日期，或切换门店。', [], language)}}</view>
+    </view>
     <view wx:for="{{pageData.schedules}}" wx:key="id" class="booking-schedule-card {{item.isBooked ? 'is-booked' : item.isFull ? 'is-full' : ''}}">
       <view class="booking-card-cover">
-      <image class="booking-cover-photo" src="{{item.type === 'private' ? '/images/backgrounds/training-private.jpg' : '/images/backgrounds/training-group.jpg'}}" mode="aspectFill" aria-hidden="true"></image>
-      <view class="booking-cover-shade"></view>
-      <view class="booking-card-header">
-        <view class="booking-time-range">
-          <text class="booking-time-main">{{item.timeStart}}</text>
-          <text class="booking-time-divider">—</text>
-          <text class="booking-time-end">{{item.timeEnd}}</text>
+        <image class="booking-cover-photo" src="{{item.type === 'private' ? '/images/backgrounds/training-private.jpg' : '/images/backgrounds/training-group.jpg'}}" mode="aspectFill" aria-hidden="true"></image>
+        <view class="booking-cover-shade"></view>
+        <view class="booking-card-header">
+          <view class="booking-time-range">
+            <text class="booking-time-main">{{item.timeStart}}</text>
+            <text class="booking-time-divider">—</text>
+            <text class="booking-time-end">{{item.timeEnd}}</text>
+          </view>
+          <view class="booking-card-status {{item.isBooked ? 'is-booked' : item.isFull ? 'is-disabled' : ''}}">
+            <view class="booking-status-dot"></view>
+            <text>{{i18n.t(item.isBooked ? '已预约' : item.isFull ? '已满员' : '可预约', language)}}</text>
+          </view>
         </view>
-        <view class="booking-card-status {{item.isBooked ? 'is-booked' : item.isFull ? 'is-disabled' : ''}}">
-          <view class="booking-status-dot"></view>
-          <text>{{i18n.t(item.isBooked ? '已预约' : item.isFull ? '已满员' : '可预约', language)}}</text>
-        </view>
-      </view>
       </view>
       <view class="booking-card-info">
-        <view class="booking-course-type {{item.type === 'private' ? 'is-private' : ''}}">{{i18n.t(item.typeLabel, language)}}</view>
         <view class="booking-card-title">{{item.title}}</view>
         <view class="booking-card-meta"><text class="booking-meta-label">{{i18n.f('教练', [], language)}}</text><text class="booking-meta-value">{{item.coachName}}</text></view>
         <view class="booking-card-meta"><text class="booking-meta-label">{{i18n.f('门店', [], language)}}</text><text class="booking-meta-value">{{item.venue}}</text></view>
@@ -79,57 +73,102 @@
   </view>
 
   <view wx:if="{{filters.type === 'private'}}" class="private-booking-section">
-    <view class="private-section-head private-training-feature"><image class="private-feature-photo" src="/images/backgrounds/training-private.jpg" mode="aspectFill" aria-hidden="true"></image><view class="private-feature-shade"></view><view class="private-feature-content"><view class="private-feature-kicker">{{i18n.t('专属训练', language)}}</view><view class="section-title">{{i18n.t('选择预约教练', language)}}</view><text class="private-section-count">{{i18n.f('{0} 位教练', [pageData.coaches.length], language)}}</text></view></view>
-    <view class="private-coach-list" wx:if="{{pageData.coaches.length}}">
-      <view wx:if="{{pageData.selectedCoach}}" class="private-coach-row selected" data-coach-id="{{pageData.selectedCoach.id}}" bindtap="onOpenCoachProfile">
-        <image wx:if="{{pageData.selectedCoach.avatarUrl}}" class="private-coach-avatar" src="{{pageData.selectedCoach.avatarUrl}}" mode="aspectFill"></image><view wx:else class="private-coach-avatar">{{pageData.selectedCoach.avatarText}}</view>
-        <view class="private-coach-main"><view class="private-coach-name">{{pageData.selectedCoach.name}} <text class="private-selected-mark">✓</text></view><view class="private-coach-meta">{{pageData.selectedCoach.titleIsDefault ? i18n.t('场馆人员', language) : pageData.selectedCoach.title}}</view><view class="private-coach-link">{{i18n.t('查看教练介绍 ›', language)}}</view></view>
-        <button class="private-coach-select change" catchtap="onOpenCoachPicker" disabled="{{privateSubmitting || privatePending}}">{{i18n.t('更换教练', language)}}</button>
+    <view wx:if="{{privatePending}}" class="card private-pending">
+      <view class="section-heading">{{i18n.t(privateSubmitting ? '正在预约' : '预约结果待确认', language)}}</view>
+      <view class="private-pending-details">
+        <view>{{privatePending.coachName}} · {{privatePending.storeName}}</view>
+        <view>{{privatePending.date}} · {{privatePending.start}} — {{privatePending.end}}</view>
       </view>
-      <block wx:else>
-        <view wx:for="{{pageData.privateCoachPreview}}" wx:key="id" class="private-coach-row" data-coach-id="{{item.id}}" bindtap="onOpenCoachProfile">
-          <image wx:if="{{item.avatarUrl}}" class="private-coach-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image><view wx:else class="private-coach-avatar">{{item.avatarText}}</view>
-          <view class="private-coach-main"><view class="private-coach-name">{{item.name}}</view><view class="private-coach-meta">{{item.titleIsDefault ? i18n.t('场馆人员', language) : item.title}}</view><view class="private-coach-link">{{i18n.t('查看教练介绍 ›', language)}}</view></view>
-          <button class="private-coach-select" data-coach-id="{{item.id}}" catchtap="onCoachChange" disabled="{{privateSubmitting || privatePending}}">{{i18n.t('选择', language)}}</button>
-        </view>
-        <button wx:if="{{pageData.coaches.length > 3}}" class="private-coach-all" bindtap="onOpenCoachPicker" disabled="{{privateSubmitting || privatePending}}">{{i18n.f('查看全部 {0} 位教练', [pageData.coaches.length], language)}} <text>›</text></button>
-      </block>
+      <view wx:if="{{!privateSubmitting}}" class="card-desc">{{i18n.t('请先核对原预约结果，再发起其他预约。', language)}}</view>
+      <button class="primary-button" disabled="{{privateSubmitting || pageBusy || pageError}}" loading="{{privateSubmitting}}" bindtap="onBookPrivate">{{i18n.t('核对原预约', language)}}</button>
     </view>
-    <view wx:if="{{!pageBusy && !pageError && !pageData.coaches.length}}" class="card empty-state">{{i18n.t('暂无可预约教练，请联系场馆', language)}}</view>
-    <view wx:if="{{filters.coachId !== 'all'}}" class="card private-time-card"><view class="section-title">{{pageData.selectedCoachName}} · {{filters.dateKey}}</view><view class="private-time-grid"><picker class="private-time-picker" mode="time" value="{{privateStart}}" disabled="{{privatePending || privateSubmitting}}" data-field="privateStart" bindchange="onPrivateTime"><view class="field-label">{{i18n.t('开始时间', language)}}</view><view class="private-time-value">{{privateStart}} ⌄</view></picker><picker class="private-time-picker" mode="time" value="{{privateEnd}}" disabled="{{privatePending || privateSubmitting}}" data-field="privateEnd" bindchange="onPrivateTime"><view class="field-label">{{i18n.t('结束时间', language)}}</view><view class="private-time-value">{{privateEnd}} ⌄</view></picker></view><view class="card-desc">{{i18n.t('教练当天已占用时段', language)}}</view><view class="private-busy-list"><text wx:for="{{pageData.privateBusyTimes}}" wx:key="id">{{item.timeRange}}</text><view wx:if="{{!pageData.privateBusyTimes.length}}" class="card-desc">{{i18n.t('暂无已占用时段', language)}}</view></view><button class="primary-button" loading="{{privateSubmitting}}" disabled="{{privateSubmitting || pageBusy || pageError || privatePending}}" bindtap="onBookPrivate">{{i18n.t(runtime.isAuthenticated ? '预约专属训练' : '登录后预约', language)}}</button><view class="card-desc private-note">{{i18n.t('请私下与教练确认训练安排。开课前 2 小时可取消。', language)}}</view></view>
-    <view wx:if="{{privatePending}}" class="card private-pending"><view class="section-title">{{i18n.t('预约结果待确认', language)}}</view><view class="card-desc">{{privatePending.coachName}} · {{privatePending.storeName}}<view>{{privatePending.date}} · {{privatePending.start}} — {{privatePending.end}}</view></view><view class="card-desc">{{i18n.t('请先核对原预约结果，再发起其他预约。', language)}}</view><button class="primary-button" disabled="{{privateSubmitting || pageBusy || pageError}}" loading="{{privateSubmitting}}" bindtap="onBookPrivate">{{i18n.t('核对原预约', language)}}</button></view>
+
+    <block wx:else>
+      <view class="card private-coach-card">
+        <view class="private-panel-heading">
+          <view class="section-heading">{{i18n.t('选择预约教练', language)}}</view>
+          <button wx:if="{{pageData.selectedCoach}}" class="private-coach-control" bindtap="onChangeCoach" disabled="{{privateSubmitting}}">{{i18n.t('更换教练', language)}}</button>
+          <text wx:elif="{{pageData.coaches.length}}" class="private-section-count">{{i18n.f('{0} 位教练', [pageData.coaches.length], language)}}</text>
+        </view>
+
+        <view wx:if="{{pageData.selectedCoach}}" class="private-coach-row selected" data-coach-id="{{pageData.selectedCoach.id}}" bindtap="onOpenCoachProfile" hover-class="tap-feedback">
+          <image wx:if="{{pageData.selectedCoach.avatarUrl}}" class="private-coach-avatar" src="{{pageData.selectedCoach.avatarUrl}}" mode="aspectFill"></image>
+          <view wx:else class="private-coach-avatar">{{pageData.selectedCoach.avatarText}}</view>
+          <view class="private-coach-main">
+            <view class="private-coach-name">{{pageData.selectedCoach.name}}</view>
+            <view class="private-coach-meta">{{pageData.selectedCoach.titleIsDefault ? i18n.t('场馆人员', language) : pageData.selectedCoach.title}}</view>
+            <view class="private-coach-link">{{i18n.t('查看教练介绍 ›', language)}}</view>
+          </view>
+        </view>
+        <block wx:elif="{{pageData.coaches.length}}">
+          <view wx:for="{{pageData.privateCoachPreview}}" wx:key="id" class="private-coach-row" data-coach-id="{{item.id}}" bindtap="onOpenCoachProfile" hover-class="tap-feedback">
+            <image wx:if="{{item.avatarUrl}}" class="private-coach-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+            <view wx:else class="private-coach-avatar">{{item.avatarText}}</view>
+            <view class="private-coach-main">
+              <view class="private-coach-name">{{item.name}}</view>
+              <view class="private-coach-meta">{{item.titleIsDefault ? i18n.t('场馆人员', language) : item.title}}</view>
+              <view class="private-coach-link">{{i18n.t('查看教练介绍 ›', language)}}</view>
+            </view>
+            <button class="private-coach-select" data-coach-id="{{item.id}}" catchtap="onCoachChange" disabled="{{privateSubmitting}}">{{i18n.t('选择', language)}}</button>
+          </view>
+          <button wx:if="{{pageData.coaches.length > 3}}" class="private-coach-all" bindtap="onOpenCoachPicker" disabled="{{privateSubmitting}}">{{i18n.f('查看全部 {0} 位教练', [pageData.coaches.length], language)}}</button>
+        </block>
+        <view wx:elif="{{!pageBusy && !pageError}}" class="card-desc private-coach-empty">{{i18n.t('暂无可预约教练，请联系场馆', language)}}</view>
+      </view>
+
+      <view wx:if="{{pageData.selectedCoach}}" class="card private-time-card">
+        <view class="section-heading">{{i18n.t('选择训练时间', language)}}</view>
+        <view class="date-grid">
+          <view wx:for="{{pageData.dates}}" wx:key="key" class="date-card {{filters.dateKey === item.key ? 'active' : ''}}" data-date-key="{{item.key}}" bindtap="onDateChange" hover-class="tap-feedback">
+            <view class="date-card-kicker">{{i18n.t(item.displayWeekday, language)}}</view>
+            <view class="date-card-label">{{item.displayMonthDay}}</view>
+          </view>
+        </view>
+        <view class="private-time-grid">
+          <picker class="private-time-picker" mode="time" value="{{privateStart}}" disabled="{{privateSubmitting}}" data-field="privateStart" bindchange="onPrivateTime">
+            <view class="private-time-label">{{i18n.t('开始时间', language)}}</view>
+            <view class="private-time-value">{{privateStart}} <text>⌄</text></view>
+          </picker>
+          <picker class="private-time-picker" mode="time" value="{{privateEnd}}" disabled="{{privateSubmitting}}" data-field="privateEnd" bindchange="onPrivateTime">
+            <view class="private-time-label">{{i18n.t('结束时间', language)}}</view>
+            <view class="private-time-value">{{privateEnd}} <text>⌄</text></view>
+          </picker>
+        </view>
+        <view wx:if="{{!pageBusy && !pageError}}" class="private-busy">
+          <view class="private-time-label">{{i18n.t('教练当天已占用时段', language)}}</view>
+          <view wx:if="{{pageData.privateBusyTimes.length}}" class="private-busy-list">
+            <text wx:for="{{pageData.privateBusyTimes}}" wx:key="id">{{item.timeRange}}</text>
+          </view>
+          <view wx:else class="private-busy-empty">{{i18n.t('暂无已占用时段', language)}}</view>
+        </view>
+        <view class="card-desc private-note">{{i18n.t('请私下与教练确认训练安排。开课前 2 小时可取消。', language)}}</view>
+        <button class="primary-button" loading="{{privateSubmitting}}" disabled="{{privateSubmitting || pageBusy || pageError}}" bindtap="onBookPrivate">{{i18n.t(runtime.isAuthenticated ? '预约专属训练' : '登录后预约', language)}}</button>
+      </view>
+    </block>
   </view>
 
   <view wx:if="{{coachPickerVisible}}" class="coach-drawer-mask" bindtap="onCloseCoachPicker"></view>
   <view wx:if="{{coachPickerVisible}}" class="coach-drawer">
     <view class="coach-drawer-header">
       <view>
-        <view class="coach-drawer-title">{{i18n.t(filters.type === 'private' ? '选择预约教练' : '选择场馆人员', language)}}</view>
+        <view class="coach-drawer-title">{{i18n.t('选择预约教练', language)}}</view>
         <view class="coach-drawer-subtitle">{{i18n.f('支持按姓名 / 岗位 / 熟悉项目搜索', [], language)}}</view>
       </view>
       <view class="coach-drawer-close" bindtap="onCloseCoachPicker">×</view>
     </view>
     <input class="coach-search-input" placeholder="{{i18n.f('搜索姓名、岗位、项目', [], language)}}" placeholder-class="coach-search-placeholder" value="{{coachKeyword}}" bindinput="onCoachKeywordInput" />
     <scroll-view class="coach-drawer-scroll" scroll-y="true" lower-threshold="100" bindscrolltolower="onCoachListLower">
-      <view wx:if="{{filters.type === 'group'}}" class="coach-option-item {{pageData.filters.coachId === 'all' ? 'active' : ''}}" data-coach-id="all" bindtap="onCoachChange">
-        <view class="coach-option-avatar">{{i18n.f('全部', [], language)}}</view>
-        <view class="coach-option-main">
-          <view class="coach-option-name">{{i18n.f('全部人员', [], language)}}</view>
-          <view class="coach-option-meta">{{i18n.f('当前筛选结果 {0} 个场次', [pageData.resultCount], language)}}</view>
-        </view>
-      </view>
-      <view wx:for="{{pageData.visibleCoachOptions}}" wx:key="id" class="coach-option-item {{pageData.filters.coachId === item.id ? 'active' : ''}}" data-coach-id="{{item.id}}" bindtap="onCoachOptionTap">
+      <view wx:for="{{pageData.visibleCoachOptions}}" wx:key="id" class="coach-option-item {{pageData.filters.coachId === item.id ? 'active' : ''}}" data-coach-id="{{item.id}}" bindtap="onOpenCoachProfile">
         <image wx:if="{{item.avatarUrl}}" class="coach-option-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image><view wx:else class="coach-option-avatar">{{item.avatarText}}</view>
         <view class="coach-option-main">
           <view class="coach-option-row">
             <view class="coach-option-name">{{item.name}}</view>
-            <view wx:if="{{filters.type === 'group'}}" class="coach-option-level">{{i18n.t(item.levelLabel, language)}}</view>
           </view>
           <view class="coach-option-meta">{{item.titleIsDefault ? i18n.t('场馆人员', language) : item.title}}</view>
           <view class="coach-option-meta coach-summary">{{item.summaryText}}</view>
-          <view wx:if="{{filters.type === 'private'}}" class="private-coach-link">{{i18n.t('查看教练介绍 ›', language)}}</view>
+          <view class="private-coach-link">{{i18n.t('查看教练介绍 ›', language)}}</view>
         </view>
-        <button wx:if="{{filters.type === 'private'}}" class="private-coach-select" data-coach-id="{{item.id}}" catchtap="onCoachChange" disabled="{{privateSubmitting || privatePending}}">{{i18n.t(filters.coachId === item.id ? '已选择' : '选择', language)}}</button>
+        <button class="private-coach-select" data-coach-id="{{item.id}}" catchtap="onCoachChange" disabled="{{privateSubmitting || privatePending}}">{{i18n.t(filters.coachId === item.id ? '已选择' : '选择', language)}}</button>
       </view>
       <view wx:if="{{pageData.hasMoreCoachOptions}}" class="coach-more-hint">{{i18n.t('继续下滑查看更多教练', language)}}</view>
       <view wx:if="{{pageData.filteredCoachOptions.length === 0}}" class="empty-text">{{i18n.f('没有匹配到场馆人员，请换个关键词再试。', [], language)}}</view>

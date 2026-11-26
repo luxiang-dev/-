@@ -244,6 +244,7 @@ Page(withPageState({
     navigateTo({ url: '/pages/login/index?returnTo=profile' })
   },
 
+  goPointsMall() { navigateTo({ url: '/pages/mall/index' }) },
   goPoints() { navigateTo({ url: '/pages/points/index' }) },
 
   async onToggleInvite() {

@@ -1,5 +1,5 @@
 const { getLanguage, subscribe, t } = require('./i18n')
-const titles = {
+const titles = { 'pages/mall/index':'积分商城', 'pages/admin/gifts/index':'积分礼品管理',
   'pages/bookings/index': '全部预约',
   'pages/coach/index': '教练介绍', 'pages/coach/edit/index': '编辑教练资料',
   'pages/admin/reports/index': '客户跟进与经营报表',

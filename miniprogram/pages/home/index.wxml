@@ -3,35 +3,37 @@
 <view class="page-shell locale-page locale-{{language}} home-page">
   <view class="home-masthead">
     <view class="home-brand"><text class="home-wordmark">ONE</text><text class="home-brand-caption">{{i18n.f('泰拳格斗馆', [], language)}}</text></view>
-    <view class="home-store-trigger" bindtap="onOpenStorePicker" hover-class="tap-feedback"><text class="store-indicator"></text><text>{{pageData.currentStore.name || i18n.t('选择门店', language)}}</text><text class="home-chevron">⌄</text></view>
+    <view class="home-store-trigger" bindtap="onOpenStorePicker" hover-class="tap-feedback"><text class="store-indicator"></text><text>{{i18n.t('选择门店', language)}}</text><text class="home-chevron">⌄</text></view>
   </view>
   <page-feedback language="{{language}}" loading="{{pageBusy}}" error="{{pageError}}" bindretry="onRetry"></page-feedback>
   <view class="home-hero">
-    <image class="home-hero-image" src="/images/gym-interior-1.jpg" mode="aspectFill"></image>
+    <image class="home-hero-image" src="{{pageData.galleryList[0].url || '/images/gym-interior-1.jpg'}}" mode="aspectFill"></image>
     <view class="home-hero-shade"></view>
     <view class="home-hero-content">
-      <view class="home-hero-kicker">ONE / MUAY THAI CLUB</view>
-      <view class="home-hero-title"><view>{{i18n.f('每一次出拳，', [], language)}}</view><view>{{i18n.f('都更进一步。', [], language)}}</view></view>
-      <view class="home-hero-subtitle">{{i18n.f('专注当下，练出自己的节奏。', [], language)}}</view>
-      <button class="home-hero-cta" data-type="group" bindtap="goBooking" hover-class="tap-feedback">{{i18n.f('预约下一次训练', [], language)}}<text>↗</text></button>
+      <view class="home-hero-title">{{pageData.currentStore.name || i18n.t('泰拳格斗馆', language)}}</view>
+      <view wx:if="{{pageData.currentStore.address}}" class="home-hero-address">{{pageData.currentStore.address}}</view>
+      <view wx:if="{{pageData.currentStore.id}}" class="home-hero-link" bindtap="onViewStore" hover-class="tap-feedback">{{i18n.f('查看门店介绍与位置 ↗', [], language)}}</view>
     </view>
-    <view class="home-hero-bottom"><text>{{i18n.f('团体训练 · 专属指导', [], language)}}</text><text>KEEP SHOWING UP.</text></view>
   </view>
-  <view class="home-notice" bindtap="onBellTap" hover-class="tap-feedback"><view class="notice-dot"></view><text class="notice-copy">{{i18n.t(pageData.heroNotice, language)}}</text><text>›</text></view>
-  <view class="home-section-head"><view class="section-heading">{{i18n.f('你的训练，从这里开始', [], language)}}</view><text class="home-small-label">TRAINING</text></view>
+  <view class="home-section-head"><view class="section-heading">{{i18n.f('训练预约', [], language)}}</view></view>
   <view class="home-training-grid">
-    <view class="home-training-card" data-type="group" bindtap="goBooking" hover-class="tap-feedback"><view class="training-number">01 <text>↗</text></view><view class="training-title">{{i18n.f('团体训练', [], language)}}</view><view class="training-description">{{i18n.f('一起进步，保持热爱', [], language)}}</view><view class="training-tag">{{i18n.f('查看团课场次', [], language)}}</view></view>
-    <view class="home-training-card training-private" data-type="private" bindtap="goBooking" hover-class="tap-feedback"><view class="training-number">02 <text>↗</text></view><view class="training-title">{{i18n.f('专属训练', [], language)}}</view><view class="training-description">{{i18n.f('专注你的动作与目标', [], language)}}</view><view class="training-tag">{{i18n.f('查看专属场次', [], language)}}</view></view>
+    <button class="home-training-card" data-type="group" bindtap="goBooking" hover-class="tap-feedback">
+      <view class="training-title">{{i18n.f('团体训练', [], language)}}</view>
+      <view class="training-card-footer"><text>{{i18n.f('查看团课场次', [], language)}}</text><text aria-hidden="true">↗</text></view>
+    </button>
+    <button class="home-training-card training-private" data-type="private" bindtap="goBooking" hover-class="tap-feedback">
+      <view class="training-title">{{i18n.f('专属训练', [], language)}}</view>
+      <view class="training-card-footer"><text>{{i18n.f('选择预约教练', [], language)}}</text><text aria-hidden="true">↗</text></view>
+    </button>
   </view>
   <view class="home-member-links"><view bindtap="goMySchedule" hover-class="tap-feedback"><text class="member-link-title">{{i18n.f('我的预约', [], language)}}</text><text class="member-link-desc">{{i18n.f('查看训练安排', [], language)}}</text><text class="member-link-arrow">›</text></view><view bindtap="goIdentityQr" hover-class="tap-feedback"><text class="member-link-title">{{i18n.f('到店身份码', [], language)}}</text><text class="member-link-desc">{{i18n.f('出示给场馆人员', [], language)}}</text><text class="member-link-arrow">›</text></view></view>
-  <block wx:if="{{pageData.galleryList.length}}"><view class="home-section-head"><view class="section-heading">{{i18n.f('在这里，认真训练', [], language)}}</view><view class="inline-link" data-index="0" bindtap="onPreviewGallery">{{i18n.f('查看实景 ↗', [], language)}}</view></view>
-  <scroll-view class="facility-scroll" scroll-x="true" show-scrollbar="false"><view wx:for="{{pageData.galleryList}}" wx:key="url" class="facility-card" data-index="{{index}}" bindtap="onPreviewGallery" hover-class="tap-feedback"><image class="facility-image" src="{{item.url}}" mode="aspectFill"></image><view class="facility-caption"><text>0{{index + 1}}</text><text>{{item.title ? (item.defaultTitle ? i18n.t(item.title, language) : item.title) : i18n.f('场馆照片 {0}', [index + 1], language)}}</text></view></view></scroll-view></block>
+  <view wx:if="{{pageData.heroNotice}}" class="home-notice" bindtap="onBellTap" hover-class="tap-feedback"><view class="notice-dot"></view><text class="notice-copy">{{i18n.t(pageData.heroNotice, language)}}</text><text>›</text></view>
+  <block wx:if="{{pageData.galleryList.length}}"><view class="home-section-head"><view class="section-heading">{{i18n.f('场馆实景', [], language)}}</view><view class="inline-link" data-index="0" bindtap="onPreviewGallery">{{i18n.f('查看实景 ↗', [], language)}}</view></view>
+  <scroll-view class="facility-scroll" scroll-x="true" show-scrollbar="false"><view wx:for="{{pageData.galleryList}}" wx:key="url" class="facility-card" data-index="{{index}}" bindtap="onPreviewGallery" hover-class="tap-feedback"><image class="facility-image" src="{{item.url}}" mode="aspectFill" lazy-load="{{true}}"></image><view class="facility-caption"><text>{{item.title ? (item.defaultTitle ? i18n.t(item.title, language) : item.title) : i18n.f('场馆照片 {0}', [index + 1], language)}}</text></view></view></scroll-view></block>
   <view class="card home-pricing">
     <view class="collapsible-header" bindtap="onTogglePricing" hover-class="tap-feedback"><view><view class="section-heading">{{i18n.f('选择适合你的训练计划', [], language)}}</view><view class="page-caption">{{i18n.f('{0} 个套餐 · 到馆咨询', [pageData.packages.length || 0], language)}}</view></view><view class="collapse-toggle"><view class="collapse-chevron {{pricingExpanded ? 'expanded' : ''}}"></view></view></view>
     <view wx:if="{{pricingExpanded}}" class="pricing-list"><view wx:for="{{pageData.packages}}" wx:key="id" class="pricing-item"><view><view class="pricing-tag">{{i18n.t(item.type === 'private' ? '专属训练' : '团体训练', language)}}</view><view class="pricing-name">{{item.name}}</view><view class="pricing-meta">{{item.unlimited ? i18n.f('有效期 {0} 天 · 无限次', [item.validDays], language) : i18n.f('{0} 次训练', [item.lessons], language)}}</view></view><view class="pricing-price-wrap"><view class="pricing-price">¥{{item.price}}</view><view class="pricing-note">{{i18n.f('到馆购买', [], language)}}</view></view></view><view wx:if="{{!pageData.packages.length}}" class="empty-text">{{i18n.f('套餐整理中，欢迎到馆咨询', [], language)}}</view></view>
   </view>
-  <view class="home-address" wx:if="{{pageData.currentStore.address}}" bindtap="onViewStore" hover-class="tap-feedback"><view class="section-heading">{{pageData.currentStore.name}}</view><view class="page-caption">{{pageData.currentStore.address}}</view><view class="inline-link">{{i18n.f('查看门店介绍与位置 ↗', [], language)}}</view></view>
-  <view class="home-footer">{{i18n.f('ONE · 每一次坚持，都算数。', [], language)}}</view>
   <app-tabbar id="tabbar" current="/pages/home/index"></app-tabbar>
 
   <view wx:if="{{storePickerVisible}}" class="store-picker-mask" bindtap="onCloseStorePicker">

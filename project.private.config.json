@@ -1,6 +1,6 @@
 {
   "setting": {
-    "compileHotReLoad": true,
+    "compileHotReLoad": false,
     "urlCheck": false,
     "coverView": true,
     "lazyloadPlaceholderEnable": false,
@@ -14,7 +14,7 @@
     "useLanDebug": false,
     "showES6CompileOption": false,
     "checkInvalidKey": true,
-    "ignoreDevUnusedFiles": true,
+    "ignoreDevUnusedFiles": false,
     "bigPackageSizeSupport": false,
     "useIsolateContext": true
   },

@@ -6,6 +6,8 @@ const MEMBER_ACTIONS = new Set(['getMyBookingRecords', 'getMediaUploadData', 'up
 function reject(message, code) {
   throw Object.assign(new Error(message), { code })
 }
+for (const action of ['getGiftManageData','savePointGift','handleGiftRedemption','savePointsRule']) ADMIN_ACTIONS.add(action)
+for (const action of ['getPointsMallData','redeemPointGift']) MEMBER_ACTIONS.add(action)
 
 function authorizeRequest(event, user) {
   const action = event.action

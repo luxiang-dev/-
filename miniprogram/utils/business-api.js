@@ -179,6 +179,12 @@ async function updatePackageStatus(payload) {
 }
 
 module.exports = {
+  getPointsMallData: async payload => unwrapResult(await callBusinessCore('getPointsMallData', payload)),
+  getGiftManageData: async payload => unwrapResult(await callBusinessCore('getGiftManageData', payload)),
+  savePointGift: async payload => unwrapResult(await callBusinessCore('savePointGift', payload)),
+  redeemPointGift: async payload => unwrapResult(await callBusinessCore('redeemPointGift', payload)),
+  handleGiftRedemption: async payload => unwrapResult(await callBusinessCore('handleGiftRedemption', payload)),
+  savePointsRule: async payload => unwrapResult(await callBusinessCore('savePointsRule', payload)),
   getMyBookingRecords: async payload => unwrapResult(await callBusinessCore('getMyBookingRecords', payload)),
   updateStoreGallery: async payload => unwrapResult(await callBusinessCore('updateStoreGallery', payload)),
   getCoachProfile: async payload => unwrapResult(await callBusinessCore('getCoachProfile', payload)),

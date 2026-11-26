@@ -80,6 +80,7 @@
     <view class="card">
       <view class="section-title">{{i18n.f('管理门店', [], language)}}</view>
       <view class="admin-tools-grid">
+        <view class="admin-tool-card" bindtap="onOpenGifts"><view class="admin-card-title">{{i18n.t('积分礼品管理', language)}}</view><view class="admin-card-desc">{{i18n.t('上架礼品、确认领取与设置返积分比例', language)}}</view></view>
         <view class="admin-tool-card" bindtap="onOpenReports"><view class="admin-card-title">{{i18n.t('客户跟进与报表', language)}}</view><view class="admin-card-desc">{{i18n.t('筛选客户、查看经营数据并导出', language)}}</view></view>
         <view class="admin-tool-card" bindtap="onOpenCorrections"><view class="admin-card-title">{{i18n.t('操作纠错', language)}}</view><view class="admin-card-desc">{{i18n.t('撤销误派发与误核销，查看审计记录', language)}}</view></view>
         <view class="admin-tool-card primary" bindtap="onOpenOperations">

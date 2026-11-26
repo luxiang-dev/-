@@ -1,0 +1,59 @@
+.%%HERESUFFIX%%manage-page { padding: %%?24rpx?%% %%?24rpx?%% calc(%%?166rpx?%% + env(safe-area-inset-bottom)); }
+.%%HERESUFFIX%%manage-hero { padding: %%?30rpx?%%; border-radius: %%?24rpx?%%; background: #20251f; color: #fff; }
+.%%HERESUFFIX%%hero-eyebrow { color: #bdc2b6; font-size: %%?18rpx?%%; letter-spacing: %%?3rpx?%%; margin-bottom: %%?18rpx?%%; }
+.%%HERESUFFIX%%hero-title { font-size: %%?42rpx?%%; font-weight: 800; }
+.%%HERESUFFIX%%hero-caption { color: #bdc2b6; font-size: %%?23rpx?%%; line-height: 1.6; margin-top: %%?14rpx?%%; }
+.%%HERESUFFIX%%hero-badge { color: #d8dbd1; font-size: %%?21rpx?%%; }
+.%%HERESUFFIX%%hero-add { margin: 0; border-radius: %%?12rpx?%%; padding: %%?16rpx?%% %%?20rpx?%%; color: #fff; background: #c7452d; font-size: %%?23rpx?%%; }
+.%%HERESUFFIX%%manage-filters { margin-top: %%?20rpx?%%; background: #fff; padding: %%?24rpx?%%; border-radius: %%?20rpx?%%; border: %%?1rpx?%% solid #e6e7df; }
+.%%HERESUFFIX%%manage-search { margin-top: 0; }
+.%%HERESUFFIX%%filter-strip { display: flex; gap: %%?10rpx?%%; margin-top: %%?20rpx?%%; }
+.%%HERESUFFIX%%filter-pill { flex: 1; text-align: center; padding: %%?16rpx?%% %%?4rpx?%%; border-radius: %%?12rpx?%%; background: #f0f1e9; font-size: %%?23rpx?%%; color: #7c8076; }
+.%%HERESUFFIX%%filter-pill.%%HERESUFFIX%%active { background: #20251f; color: #fff; font-weight: 600; }
+.%%HERESUFFIX%%filter-count { display: block; font-size: %%?30rpx?%%; font-weight: 700; margin-top: %%?6rpx?%%; }
+.%%HERESUFFIX%%small-filter-row { display: flex; flex-wrap: wrap; gap: %%?12rpx?%%; margin-top: %%?22rpx?%%; }
+.%%HERESUFFIX%%small-filter { font-size: %%?22rpx?%%; color: #7c8076; padding: %%?10rpx?%% %%?16rpx?%%; border: %%?1rpx?%% solid #e6e7df; border-radius: %%?10rpx?%%; }
+.%%HERESUFFIX%%small-filter.%%HERESUFFIX%%active { border-color: #c7452d; background: #fcf0ea; color: #c7452d; }
+.%%HERESUFFIX%%list-heading { margin: %%?26rpx?%% %%?4rpx?%% %%?18rpx?%%; display: flex; justify-content: space-between; align-items: center; }
+.%%HERESUFFIX%%section-title { font-size: %%?28rpx?%%; font-weight: 700; }
+.%%HERESUFFIX%%muted { color: #7c8076; font-size: %%?23rpx?%%; line-height: 1.6; }
+.%%HERESUFFIX%%text-action { margin: 0; padding: %%?10rpx?%% 0; color: #c7452d; font-size: %%?23rpx?%%; }
+.%%HERESUFFIX%%manage-card { background: #fff; padding: %%?26rpx?%%; border-radius: %%?20rpx?%%; border: %%?1rpx?%% solid #e6e7df; margin-bottom: %%?18rpx?%%; }
+.%%HERESUFFIX%%card-top { display: flex; gap: %%?18rpx?%%; align-items: center; }
+.%%HERESUFFIX%%person-avatar { display: flex; align-items: center; justify-content: center; width: %%?68rpx?%%; height: %%?68rpx?%%; flex-shrink: 0; border-radius: %%?14rpx?%%; background: #eaece4; color: #20251f; font-size: %%?30rpx?%%; font-weight: 700; }
+.%%HERESUFFIX%%card-main { flex: 1; min-width: 0; }
+.%%HERESUFFIX%%item-name { font-size: %%?29rpx?%%; font-weight: 700; word-break: break-all; }
+.%%HERESUFFIX%%item-subtitle { font-size: %%?23rpx?%%; color: #7c8076; margin-top: %%?8rpx?%%; }
+.%%HERESUFFIX%%role-label,.%%HERESUFFIX%%status-label { display: inline-block; font-size: %%?21rpx?%%; border-radius: %%?8rpx?%%; padding: %%?8rpx?%% %%?12rpx?%%; background: #eaece4; color: #526341; flex-shrink: 0; }
+.%%HERESUFFIX%%role-label.%%HERESUFFIX%%admin { color: #c7452d; background: #fcf0ea; }
+.%%HERESUFFIX%%role-label.%%HERESUFFIX%%coach { color: #20251f; background: #eaece4; }
+.%%HERESUFFIX%%status-label.%%HERESUFFIX%%inactive { color: #7c8076; background: #f0f1e9; }
+.%%HERESUFFIX%%self-label { font-size: %%?19rpx?%%; color: #7c8076; margin-left: %%?12rpx?%%; font-weight: 400; }
+.%%HERESUFFIX%%card-meta { display: flex; align-items: center; gap: %%?14rpx?%%; font-size: %%?22rpx?%%; color: #7c8076; margin-top: %%?22rpx?%%; }
+.%%HERESUFFIX%%card-description { color: #7c8076; font-size: %%?22rpx?%%; line-height: 1.6; margin-top: %%?18rpx?%%; }
+.%%HERESUFFIX%%card-footer { display: flex; justify-content: space-between; align-items: center; gap: %%?20rpx?%%; border-top: %%?1rpx?%% solid #eeefe8; margin-top: %%?22rpx?%%; padding-top: %%?18rpx?%%; }
+.%%HERESUFFIX%%card-action { margin: 0; font-size: %%?23rpx?%%; color: #c7452d; padding: %%?10rpx?%% 0; }
+.%%HERESUFFIX%%manage-empty { text-align: center; padding: %%?46rpx?%% %%?24rpx?%%; border: %%?1rpx?%% dashed #d7dacd; border-radius: %%?20rpx?%%; }
+.%%HERESUFFIX%%manage-empty .%%HERESUFFIX%%muted { margin-top: %%?14rpx?%%; }
+.%%HERESUFFIX%%sheet-mask { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1000; display: flex; align-items: flex-end; background: rgba(16,22,15,.6); }
+.%%HERESUFFIX%%manage-sheet { width: 100%; height: 88vh; background: #f5f4ef; border-radius: %%?28rpx?%% %%?28rpx?%% 0 0; display: flex; flex-direction: column; overflow: hidden; }
+.%%HERESUFFIX%%sheet-header { padding: %%?28rpx?%%; display: flex; justify-content: space-between; align-items: center; gap: %%?20rpx?%%; border-bottom: %%?1rpx?%% solid #dce0d3; flex-shrink: 0; }
+.%%HERESUFFIX%%sheet-header .%%HERESUFFIX%%muted { margin-top: %%?8rpx?%%; }
+.%%HERESUFFIX%%sheet-close { margin: 0; font-size: %%?24rpx?%%; padding: %%?14rpx?%%; color: #7c8076; }
+.%%HERESUFFIX%%sheet-scroll { flex: 1; min-height: 0; height: 0; }
+.%%HERESUFFIX%%sheet-body { padding: %%?28rpx?%%; }
+.%%HERESUFFIX%%sheet-actions { flex-shrink: 0; padding: %%?20rpx?%% %%?28rpx?%% calc(%%?20rpx?%% + env(safe-area-inset-bottom)); background: #fff; }
+.%%HERESUFFIX%%choice-card { background: #fff; border: %%?2rpx?%% solid #e6e7df; border-radius: %%?18rpx?%%; padding: %%?24rpx?%%; margin-bottom: %%?16rpx?%%; }
+.%%HERESUFFIX%%choice-card.%%HERESUFFIX%%selected { border-color: #c7452d; background: #fcf0ea; }
+.%%HERESUFFIX%%choice-card .%%HERESUFFIX%%muted { margin-top: %%?12rpx?%%; }
+.%%HERESUFFIX%%change-preview { margin-top: %%?24rpx?%%; border-radius: %%?16rpx?%%; padding: %%?24rpx?%%; background: #eaece4; font-size: %%?26rpx?%%; line-height: 1.7; }
+.%%HERESUFFIX%%price-line { display: flex; align-items: baseline; justify-content: space-between; margin-top: %%?24rpx?%%; gap: %%?20rpx?%%; }
+.%%HERESUFFIX%%lesson-value { font-size: %%?42rpx?%%; font-weight: 800; }
+.%%HERESUFFIX%%lesson-value wx-text { font-size: %%?23rpx?%%; font-weight: 400; }
+.%%HERESUFFIX%%price-value { font-size: %%?32rpx?%%; font-weight: 700; }
+.%%HERESUFFIX%%form-columns { display: flex; gap: %%?20rpx?%%; }
+.%%HERESUFFIX%%form-columns .%%HERESUFFIX%%field-block { flex: 1; min-width: 0; }
+.%%HERESUFFIX%%create-types { display: flex; gap: %%?14rpx?%%; margin-top: %%?16rpx?%%; }
+.%%HERESUFFIX%%create-types .%%HERESUFFIX%%small-filter { flex: 1; text-align: center; font-size: %%?25rpx?%%; padding: %%?18rpx?%%; }
+.%%HERESUFFIX%%status-setting { padding: %%?24rpx?%%; margin-top: %%?24rpx?%%; border-radius: %%?16rpx?%%; background: #fff; }
+.%%HERESUFFIX%%status-setting .%%HERESUFFIX%%muted { margin-top: %%?12rpx?%%; }

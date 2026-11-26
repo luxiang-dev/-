@@ -1,0 +1,20 @@
+<wxs module="i18n" src="../../utils/i18n.wxs" />
+<view class="page-shell mall-page rewards-page locale-page locale-{{language}}">
+  <page-feedback language="{{language}}" loading="{{pageBusy && !pageData}}" error="{{pageError}}" bindretry="onRetry" />
+  <view class="mall-hero"><image src="/images/backgrounds/training-group.jpg" mode="aspectFill" /><view class="hero-shade"></view><view class="hero-content"><view class="hero-heading"><view class="eyebrow">ONE / REWARDS</view><view class="page-title">{{i18n.t('积分商城', language)}}</view><view class="hero-caption">{{i18n.t('兑换好礼，到店领取', language)}}</view></view><view class="hero-account"><view class="hero-balance">{{pageData ? pageData.balance : '—'}}</view><text>{{i18n.t('积分', language)}}</text></view></view></view>
+  <view wx:if="{{!runtime.isAuthenticated && !pageBusy}}" class="card"><button class="primary-button" bindtap="goLogin">{{i18n.t('去登录', language)}}</button></view>
+  <block wx:if="{{runtime.isAuthenticated && pageData}}">
+    <view wx:if="{{pending}}" class="card"><view class="card-desc">{{i18n.t('上次兑换结果待确认，请先核对。', language)}}</view><button class="ghost-button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onRetryRedeem">{{i18n.t('核对上次兑换', language)}}</button></view>
+    <view class="mall-tabs"><view class="{{tab === 'gifts' ? 'active' : ''}}" data-tab="gifts" bindtap="onTab">{{i18n.t('可兑换礼品', language)}}</view><view class="{{tab === 'records' ? 'active' : ''}}" data-tab="records" bindtap="onTab">{{i18n.t('兑换记录', language)}}</view></view>
+    <block wx:if="{{tab === 'gifts'}}">
+      <view wx:if="{{!pageData.gifts.length}}" class="card card-desc">{{i18n.t('暂无可兑换礼品', language)}}</view>
+      <view class="gift-grid">
+        <view wx:for="{{pageData.gifts}}" wx:key="id" class="gift-card">
+          <view class="gift-visual"><image wx:if="{{item.imageUrl}}" class="gift-cover" src="{{item.imageUrl}}" mode="aspectFit" data-url="{{item.imageUrl}}" bindtap="onPreviewImage" /><view wx:else class="gift-placeholder"><view class="gift-monogram">O</view><text>ONE / GIFT</text></view></view>
+          <view class="gift-info"><view class="gift-name">{{item.name}}</view><view class="card-desc gift-description">{{item.description}}</view><view class="gift-bottom"><view class="gift-price">{{item.cost}} <text>{{i18n.t('积分', language)}}</text></view><view class="gift-stock">{{i18n.f('剩余 {0} 件', [item.stock], language)}}</view></view><button class="primary-button" data-id="{{item.id}}" bindtap="onRedeem" loading="{{submitting && pending.giftId === item.id}}" disabled="{{pageBusy || pageError || submitting || pending || item.stock < 1 || pageData.balance < item.cost}}">{{i18n.t(item.stock === 0 ? '已兑完' : pageData.balance >= item.cost ? '兑换礼品' : '积分不足', language)}}</button></view>
+        </view>
+      </view>
+    </block>
+    <block wx:if="{{tab === 'records'}}"><view wx:if="{{!pageData.records.length}}" class="card card-desc">{{i18n.t('暂无兑换记录', language)}}</view><view wx:for="{{pageData.records}}" wx:key="id" class="card"><view class="gift-name">{{item.giftName}}</view><view class="record-meta"><text>{{item.cost}} {{i18n.t('积分', language)}} · {{item.date}}</text><text class="record-status">{{i18n.t(item.status === 'pending' ? '待领取' : item.status === 'fulfilled' ? '已领取' : '已取消', language)}}</text></view></view><view class="card-desc mall-note">{{i18n.t('显示最近50条兑换记录', language)}}</view></block>
+  </block>
+</view>

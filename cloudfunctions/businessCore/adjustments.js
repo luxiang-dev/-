@@ -2,7 +2,7 @@ const crypto = require('crypto')
 const { parseBusinessTime, businessDate } = require('./request-policy')
 const { refundCount, refundPlan } = require('./entitlements')
 
-module.exports = function createAdjustments({ db, collections: C, getDocById, listAllCollection, runBusinessTransaction, lockReservationTimeline, buildSuccess, buildFail }) {
+module.exports = function createAdjustments({ db, collections: C, getDocById, listAllCollection, runBusinessTransaction, lockReservationTimeline, reverseConsumption, buildSuccess, buildFail }) {
   const doc = async (name, id, database = db) => (await getDocById(name, id, database)).data
   const id = value => crypto.createHash('sha256').update(value).digest('hex')
   const auditId = value => 'adjust_' + id(value)
@@ -174,6 +174,7 @@ module.exports = function createAdjustments({ db, collections: C, getDocById, li
             expiry = old.expiry_date
           }
           earned = Math.max(0, earned - Number(target.amount))
+          await reverseConsumption(tx, target, receiptId, event.operator._id)
           await tx.collection(C.USER_ASSET_LOG).doc(target._id).update({ data: { reversed: true, reversal_id: receiptId, reversal_reason: reason, reversed_by: event.operator._id, reversed_at: stamp() } })
         } else {
           if (target.last_manual_receipt_id) {

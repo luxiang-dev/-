@@ -155,7 +155,7 @@ test('旧排期当天补齐失败时显示同步失败，离页响应不会更�
 function harness(relative, api = {}, storage = new Map()) {
   let definition
   const calls = { modals: [], routes: [], invalidations: [], toasts: [], cloud: 0 }
-  const app = { globalData: { userProfile: { id: 'user' } }, removeViewCacheByPrefix: (key) => calls.invalidations.push(key) }
+  const app = { getRuntimeSnapshot: () => page.data.runtime || {}, globalData: { userProfile: { id: 'user' } }, removeViewCacheByPrefix: (key) => calls.invalidations.push(key) }
   const wx = {
     showModal: (options) => { calls.modals.push(options); if (options.success) options.success({ confirm: true }) },
     showToast: (options) => calls.toasts.push(options), navigateTo: (options) => calls.routes.push(options.url), reLaunch: (options) => calls.routes.push(options.url),
@@ -1166,7 +1166,7 @@ test('全部数据页面在空缓存首次进入时可完成云端同步', async
     realApp.onLaunch()
     realApp.applyCloudSession({ loggedIn: true, userProfile: { id: 'admin', nickname: '管理员', role: 'admin' } })
     realApp.getRuntimeSnapshotAsync = async function () { return this.getRuntimeSnapshot() }
-    const response = { coach: { id: 'admin', name: '管理员', title: '', levelLabel: '', bio: '', honors: [], photos: [], specialties: [], version: 0 }, currentStore: realApp.getCurrentStore(), stores: realApp.globalData.stores, schedules: [], plans: [], users: [], customers: [], payments: [], packages: [], myBookings: [], todayClasses: [], members: [], packageOptions: [], classInfo: { id: 'class' }, roster: [] }
+    const response = { rule:{rate:5,version:0},gifts:[],records:[],balance:0, coach: { id: 'admin', name: '管理员', title: '', levelLabel: '', bio: '', honors: [], photos: [], specialties: [], version: 0 }, currentStore: realApp.getCurrentStore(), stores: realApp.globalData.stores, schedules: [], plans: [], users: [], customers: [], payments: [], packages: [], myBookings: [], todayClasses: [], members: [], packageOptions: [], classInfo: { id: 'class' }, roster: [] }
     const api = new Proxy({}, { get: () => async () => { reads += 1; return response } })
     const { page, app } = harness(name + '.js', api)
     Object.assign(app, realApp)
@@ -1235,18 +1235,59 @@ test('大量教练首页最多三行，选择面板分批显示且可搜索后�
   f.page.onCoachKeywordInput({ detail: { value: '专项拳击' } })
   assert.equal(f.page.data.pageData.visibleCoachOptions.length, 1); assert.equal(f.page.data.pageData.visibleCoachOptions[0].id, 'coach70')
   assert.equal(f.page.data.coachOptionsLimit, 20); assert.equal(f.page.data.pageData.hasMoreCoachOptions, false)
-  f.page.onCoachChange({ currentTarget: { dataset: { coachId: 'coach70' } } }); await f.page.syncPageData()
+  f.page.onCoachChange({ currentTarget: { dataset: { coachId: 'coach70' } } })
+  assert.equal(f.page.data.pageData.selectedCoach.id, 'coach70')
+  await f.page.syncPageData()
   assert.equal(f.page.data.pageData.selectedCoach.id, 'coach70'); assert.equal(f.page.data.coachPickerVisible, false)
   f.page.data.privatePending = { requestId: 'pending' }; f.page.onCoachChange({ currentTarget: { dataset: { coachId: 'coach1' } } }); f.page.onOpenCoachPicker()
   assert.equal(f.page.data.filters.coachId, 'coach70'); assert.equal(f.page.data.coachPickerVisible, false)
 })
 
-test('选择面板的教练介绍与团课筛选正确分流，打开介绍时收起面板', () => {
-  const f = privatePage(); f.page.data.coachPickerVisible = true
-  f.page.onCoachOptionTap({ currentTarget: { dataset: { coachId: 'coach2' } } })
-  assert.equal(f.calls.routes[0], '/pages/coach/index?coachId=coach2'); assert.equal(f.page.data.coachPickerVisible, false)
-  f.page.data.filters.type = 'group'; f.page.onCoachOptionTap({ currentTarget: { dataset: { coachId: 'coach3' } } })
-  assert.equal(f.page.data.filters.coachId, 'coach3'); assert.equal(f.calls.routes.length, 1)
+test('更换教练直接返回页内列表并保留日期和时间，迟到的占用查询不恢复旧教练', async () => {
+  let resolveRead
+  const response = new Promise(resolve => { resolveRead = resolve })
+  const { page, app, calls } = harness('pages/booking/index.js', { getBookingViewData: () => response })
+  const runtime = { isAuthenticated: true, userProfile: { id: 'user' }, currentStore: { id: 'store' } }
+  const coaches = [{ id: 'coach', name: '李教练' }, { id: 'other', name: '王教练' }]
+  app.getRuntimeSnapshot = () => runtime
+  app.getRuntimeSnapshotAsync = async () => runtime
+  app.getViewCache = () => null
+  app.getBookingPageData = () => ({ coaches })
+  app.setViewCache = () => { assert.fail('已失效请求不应写入当前缓存') }
+  Object.assign(page.data, { filters: { type: 'private', coachId: 'coach', dateKey: '2099-01-02' }, privateStart: '14:15', privateEnd: '15:45' })
+  const syncing = page.syncPageData()
+  await Promise.resolve()
+  assert.equal(page.data.pageData.selectedCoach.id, 'coach')
+  page.onChangeCoach()
+  assert.equal(page.data.coachPickerVisible, false)
+  assert.equal(page.data.pageData.selectedCoach, null)
+  assert.equal(page.data.pageData.privateCoachPreview.length, 2)
+  assert.equal(page.data.filters.dateKey, '2099-01-02')
+  assert.equal(page.data.privateStart, '14:15')
+  assert.equal(page.data.privateEnd, '15:45')
+  assert.equal(calls.routes.length, 0)
+  resolveRead({ coaches, privateBusyTimes: [{ id: 'busy' }] })
+  await syncing
+  assert.equal(page.data.filters.coachId, 'all')
+  assert.equal(page.data.pageData.privateBusyTimes.length, 0)
+  const wxml = fs.readFileSync(path.join(root, 'pages/booking/index.wxml'), 'utf8')
+  assert.match(wxml, /class="private-coach-control" bindtap="onChangeCoach"/)
+})
+
+test('教练介绍收起选择面板，切回团课时查询全部场次并记住专属教练', () => {
+  const { page, calls } = privatePage()
+  page.data.coachPickerVisible = true
+  page.onOpenCoachProfile({ currentTarget: { dataset: { coachId: 'coach2' } } })
+  assert.equal(calls.routes[0], '/pages/coach/index?coachId=coach2')
+  assert.equal(page.data.coachPickerVisible, false)
+  page.onTypeChange({ currentTarget: { dataset: { type: 'group' } } })
+  assert.equal(page.data.filters.coachId, 'all')
+  page.onOpenCoachPicker()
+  page.onCoachChange({ currentTarget: { dataset: { coachId: 'coach3' } } })
+  assert.equal(page.data.coachPickerVisible, false)
+  assert.equal(page.data.filters.coachId, 'all')
+  page.onTypeChange({ currentTarget: { dataset: { type: 'private' } } })
+  assert.equal(page.data.filters.coachId, 'coach')
 })
 
 test('资料分区切换保留所有草稿和未保存状态', () => {
@@ -1537,4 +1578,97 @@ test('旧个人中心缓存中的历史预约被过滤，待到店最多展示�
   const f=harness('pages/profile/index.js');f.app.getViewCache=()=>({myBookings:Array.from({length:12},(_,i)=>({id:'b'+i,status:i%2?'已完成':'待到店',dateLabel:'10/09'}))});
   f.page.hydratePageData({isAuthenticated:true,userProfile:{id:'user',nickname:'用户',phone:'13812345678'}});
   assert.deepEqual(Array.from(f.page.data.pageData.myBookings,item=>item.id),['b0','b2','b4']);
+})
+
+function mallPage(api={},storage=new Map()){
+ const f=harness('pages/mall/index.js',{getPointsMallData:async()=>({balance:100,gifts:[],records:[]}),...api},storage)
+ const runtime={isAuthenticated:true,userProfile:{id:'member'},role:'client'}
+ f.app.getRuntimeSnapshotAsync=async()=>runtime
+ f.page.data.runtime=runtime;f.page.data.pageData={balance:100,gifts:[{id:'gift',version:1,cost:10,stock:1,name:'毛巾'}],records:[]}
+ return f
+}
+test('商城连续点击仅确认和提交一次，成功后清除待确认记录',async()=>{
+ let writes=0;const f=mallPage({redeemPointGift:async()=>{writes++;return {message:'兑换成功，请到店领取'}}})
+ const e={currentTarget:{dataset:{id:'gift'}}}
+ await Promise.all([f.page.onRedeem(e),f.page.onRedeem(e)])
+ assert.equal(writes,1);assert.equal(f.calls.modals.filter(m=>m.title==='兑换礼品').length,1);assert.equal(f.storage.size,0);assert.equal(f.page.data.tab,'records')
+})
+test('兑换成功直接显示服务端余额、库存和记录', async () => {
+ let reads = 0
+ const gift = { id: 'gift', stock: 0, version: 2 }
+ const record = { id: 'record', giftName: '毛巾', status: 'pending' }
+ const f = mallPage({
+  getPointsMallData: async () => { reads++; throw Error('unexpected refresh') },
+  redeemPointGift: async () => ({ balance: 90, gift, record, message: '兑换成功，请到店领取' }),
+ })
+ await f.page.onRedeem({ currentTarget: { dataset: { id: 'gift' } } })
+ assert.equal(reads, 0)
+ assert.equal(f.page.data.pageData.balance, 90)
+ assert.equal(f.page.data.pageData.gifts[0].version, 2)
+ assert.equal(f.page.data.pageData.records[0].id, 'record')
+})
+
+test('同账号刷新失败保留商城数据，切换账号后清除旧余额', async () => {
+ const f = mallPage({ getPointsMallData: async () => { throw Error('网络超时') } })
+ await f.page.syncPageData()
+ assert.equal(f.page.data.pageData.balance, 100)
+ f.app.getRuntimeSnapshotAsync = async () => ({ userProfile: { id: 'other' }, isAuthenticated: true })
+ await f.page.syncPageData()
+ assert.equal(f.page.data.pageData, null)
+})
+
+test('商城超时保留请求，重新打开后沿用原编号核对，避免重复扣分',async()=>{
+ const storage=new Map(),requests=[]
+ const first=mallPage({redeemPointGift:async p=>{requests.push(p);throw Object.assign(Error('请求超时'),{code:'REQUEST_TIMEOUT'})}},storage)
+ await first.page.onRedeem({currentTarget:{dataset:{id:'gift'}}});assert.ok(first.page.data.pending)
+ const second=mallPage({redeemPointGift:async p=>{requests.push(p);return {repeated:true}}},storage)
+ await second.page.syncPageData();await second.page.onRetryRedeem()
+ assert.equal(requests.length,2);assert.equal(requests[0].requestId,requests[1].requestId);assert.equal(storage.size,0)
+})
+test('商城已知积分不足会释放待确认记录，账号切换时不提交兑换',async()=>{
+ const f=mallPage({redeemPointGift:async()=>{throw Object.assign(Error('积分不足，无法兑换此礼品'),{code:'REDEEM_GIFT_ERROR'})}})
+ await f.page.onRedeem({currentTarget:{dataset:{id:'gift'}}});assert.equal(f.storage.size,0);assert.equal(f.page.data.pending,null)
+ let writes=0;const g=mallPage({redeemPointGift:async()=>{writes++}})
+ g.app.getRuntimeSnapshotAsync=async()=>({isAuthenticated:true,userProfile:{id:'other'}})
+ await g.page.onRedeem({currentTarget:{dataset:{id:'gift'}}});assert.equal(writes,0);assert.equal(g.storage.size,0)
+})
+test('礼品保存断网后关闭表单仍保留核对入口，重试使用原请求编号',async()=>{
+ const requests=[],f=harness('pages/admin/gifts/index.js',{getGiftManageData:async()=>({rule:{rate:5,version:0},gifts:[],records:[]}),savePointGift:async p=>{requests.push(p);if(requests.length===1)throw Error('请求超时');return {message:'礼品已保存'}}})
+ const runtime={isAuthenticated:true,role:'admin',userProfile:{id:'admin'}};f.app.getRuntimeSnapshotAsync=async()=>runtime
+ Object.assign(f.page.data,{runtime,hasPermission:true,draft:{id:'',name:'毛巾',description:'',cost:'10',stock:'1',status:1,version:0},editing:true})
+ await f.page.onSave();assert.equal(f.page.data.pendingSave,true)
+ f.page.onClose();assert.equal(f.page.data.pendingSave,true)
+ await f.page.onRetrySave();assert.equal(requests[0].requestId,requests[1].requestId);assert.equal(f.storage.size,0)
+})
+
+function giftPhotoPage(api={},storage=new Map()){
+ const f=harness('pages/admin/gifts/index.js',{getMediaUploadData:async()=>({userId:'user',prefix:'profile-media/user/',avatarVersion:0}),getGiftManageData:async()=>({rule:{rate:5,version:0},gifts:[],records:[]}),...api},storage)
+ const runtime={isAuthenticated:true,role:'admin',userProfile:{id:'user'}}
+ f.app.getRuntimeSnapshotAsync=async()=>runtime
+ Object.assign(f.page.data,{runtime,hasPermission:true,editing:true,draft:{id:'',name:'毛巾',description:'',imageUrl:'',cost:'10',stock:'2',status:1,version:0}})
+ photoAPIs(f);return f
+}
+test('礼品选图期间离页不丢失上传结果，上传仅修改草稿，保存时携带云文件',async()=>{
+ let payload,writes=0;const f=giftPhotoPage({savePointGift:async p=>{writes++;payload=p;return {message:'礼品已保存'}}})
+ f.wx.chooseMedia=o=>{f.page.onHide();o.success({tempFiles:[{tempFilePath:'/gift.jpg'}]})}
+ await f.page.onUploadImage();assert.equal(writes,0);assert.match(f.page.data.draft.imageUrl,/cloud:\/\/.*gift_/)
+ assert.match(f.calls.upload.cloudPath,/^profile-media\/user\/gift_/);assert.equal(f.calls.compressed.compressedWidth,1600)
+ await f.page.onSave();assert.equal(writes,1);assert.equal(payload.imageUrl,f.page.data.draft.imageUrl)
+})
+test('礼品图片上传中禁止切换表单和保存，取消与超大图片保留旧图并给出原因',async()=>{
+ let release,writes=0;const f=giftPhotoPage({savePointGift:async()=>{writes++}});f.page.data.draft.imageUrl='old-image'
+ f.wx.chooseMedia=o=>{release=o}
+ const pending=f.page.onUploadImage();for(let i=0;i<5&&!release;i++)await Promise.resolve()
+ f.page.onNew();f.page.onClose();f.page.onRemoveImage();await f.page.onSave()
+ assert.equal(f.page.data.editing,true);assert.equal(f.page.data.draft.imageUrl,'old-image');assert.equal(writes,0)
+ release.fail({errMsg:'chooseMedia:fail cancel'});await pending;assert.equal(f.page.data.imageError,'')
+ photoAPIs(f,{size:3*1024*1024});await f.page.onUploadImage()
+ assert.equal(f.page.data.draft.imageUrl,'old-image');assert.match(f.page.data.imageError,/超过2MB/);assert.equal(f.calls.upload,undefined)
+})
+test('礼品上传后账号变化不写入草稿，失效图片保存失败释放待确认状态',async()=>{
+ const f=giftPhotoPage();f.page.data.draft.imageUrl='old-image'
+ f.wx.cloud.uploadFile=async()=>{f.app.getRuntimeSnapshotAsync=async()=>({isAuthenticated:true,role:'admin',userProfile:{id:'other'}});return {fileID:'cloud://test.bucket/old-owner/gift.jpg'}}
+ await f.page.onUploadImage();assert.equal(f.page.data.draft.imageUrl,'old-image');assert.match(f.page.data.imageError,/登录状态已变化/)
+ const g=giftPhotoPage({savePointGift:async()=>{throw Object.assign(Error('图片上传未完成或已失效，请重新上传'),{code:'INVALID_GIFT_IMAGE'})}})
+ await g.page.onSave();assert.equal(g.page.data.pendingSave,false);assert.equal(g.storage.size,0)
 })

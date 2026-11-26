@@ -10,7 +10,7 @@ const localizedText = require('../miniprogram/utils/i18n-text')
 const languageOptions = ['简体中文', 'English', 'Français', 'ไทย', 'Deutsch', '日本語', 'हिन्दी']
 const languageCodes = ['zh', 'en', 'fr', 'th', 'de', 'ja', 'hi']
 const i18n = { t: localizedText.translate, f: localizedText.format, list: localizedText.list }
-const pageNames = ['bookings', 'coach', 'coach/edit', 'home', 'booking', 'profile', 'points', 'login', 'workspace', 'admin', 'admin/users', 'admin/packages', 'admin/stores', 'admin/reports', 'workspace/distribute', 'workspace/schedule', 'workspace/class', 'workspace/manual', 'workspace/adjust']
+const pageNames = ['bookings', 'mall', 'admin/gifts', 'coach', 'coach/edit', 'home', 'booking', 'profile', 'points', 'login', 'workspace', 'admin', 'admin/users', 'admin/packages', 'admin/stores', 'admin/reports', 'workspace/distribute', 'workspace/schedule', 'workspace/class', 'workspace/manual', 'workspace/adjust']
 const escape = (value) => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
 const imageCache = new Map()
 function previewImageSource(source) {
@@ -112,7 +112,7 @@ function fixtures(page, search) {
   let config
   const file = path.join(mini, 'pages', page, 'index.js')
   vm.runInNewContext(fs.readFileSync(file, 'utf8'), { require: createRequire(file), Page: (value) => { config = value }, wx: { env: { USER_DATA_PATH: '' } }, setInterval, clearInterval })
-  const assets = { ...(search.has('unlimited') ? { groupUnlimited: true, privateUnlimited: true, groupUnlimitedExpiry: '2027-03-30', privateUnlimitedExpiry: '2027-09-30' } : {}), groupCount: 8, privateCount: 12, groupExpiry: '2027-03-30', privateExpiry: '2027-09-30' }
+  const assets = { ...(search.has('unlimited') ? { groupUnlimited: true, privateUnlimited: true, groupUnlimitedExpiry: '2027-03-30', privateUnlimitedExpiry: '2027-09-30' } : {}), groupCount: search.has('mixed')?190:8, privateCount:12, ...(search.has('mixed')?{privateUnlimited:true}: {}), groupExpiry: '2027-03-30', privateExpiry: '2027-09-30' }
   const packages = [{ id: 'p1', name: '30 次专属训练', type: 'private', typeLabel: '专属训练', lessons: 30, price: 6000, priceText: '6000.00', status: 1, statusLabel: '已上架', actionText: '下架套餐' }, { id: 'p2', name: '新人体验训练', type: 'private', typeLabel: '专属训练', lessons: 1, price: 99, priceText: '99.00', status: 1, statusLabel: '已上架', actionText: '下架套餐' }]
   const today = new Date()
   const dateKey = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0')
@@ -132,6 +132,16 @@ function fixtures(page, search) {
     if (search.get('state') === 'empty') { data.coach.bio = ''; data.coach.honors = []; data.coach.specialties = [] }
     if (search.get('state') === 'guest' && page === 'coach/edit') { data.canEdit = false; data.ready = false }
     if (search.get('state') === 'uploading') data.uploading = true
+  }
+  if(page==='mall'||page==='admin/gifts'){
+    data.pageData={balance:190,rule:{rate:5,version:0},gifts:[{id:'gift1',name:'ONE 训练毛巾',description:'轻巧速干，训练后也保持清爽。',cost:100,stock:12,status:1,version:1},{id:'gift2',name:'训练手绑带',description:'到店领取，由管理员确认发放。',cost:200,stock:0,status:1,version:1}],records:[{id:'r1',giftName:'ONE 训练毛巾',cost:100,status:'pending',userName:'张同学',phone:'13612345678',date:'2026-10-11'}]};data.tab=search.get('tab')||'gifts';data.rate='5';data.hasPermission=true;
+    if(search.get('state')==='empty'){data.pageData.gifts=[];data.pageData.records=[]}
+    if(search.has('editing')){data.editing=true;data.draft={id:'',name:'ONE 训练毛巾',description:'轻巧速干，到店领取。',cost:'100',stock:'12',status:1,version:0,imageUrl:''}}
+    if(search.has('photos')){data.pageData.gifts[0].imageUrl='/images/default-goods-image.png';if(data.editing)data.draft.imageUrl=data.pageData.gifts[0].imageUrl}
+    if(search.has('many'))data.pageData.gifts=Array.from({length:8},(_,index)=>({...data.pageData.gifts[index%2],id:'gift'+index,name:['ONE 训练毛巾','专业训练手绑带','运动随行水杯','轻量训练背包'][index%4],stock:index===3?0:12,cost:index%2?200:100}))
+    if(search.get('state')==='long'){data.pageData.balance=100000000;data.pageData.gifts=data.pageData.gifts.map(gift=>({...gift,name:'ONE International Professional Training Equipment Gift',description:'训练礼品详细介绍与到店领取使用说明。'.repeat(10),cost:1000000,stock:100000}))}
+    if(search.get('state')==='uploading')data.uploading=true
+    if(search.get('state')==='upload-error')data.imageError='图片上传未完成或已失效，请重新上传'
   }
   if (page === 'home') {
     const gallery = require('../miniprogram/utils/store-gallery').defaultGallery()
@@ -167,7 +177,7 @@ function fixtures(page, search) {
     if (search.get('state') === 'more-error') data.moreError = '预约记录暂时无法读取，请稍后重试'
   }
   if (page === 'points') {
-    data.pageData = { balance: 200, inviteCode: 'ON12AB34CD56EF', bound: true, boundCode: 'ON98AB76CD54EF', records: [{ id: '1', amount: 100, title: '邀请好友奖励', dateLabel: '2026-10-09' }, { id: '2', amount: 100, title: '填写邀请码奖励', dateLabel: '2026-10-09' }] }
+    data.pageData = { balance:200,rewardRate:5, inviteCode: 'ON12AB34CD56EF', bound: true, boundCode: 'ON98AB76CD54EF', records: [{ id: '1', amount: 100, title: '邀请好友奖励', dateLabel: '2026-10-09' }, { id: '2', amount: 100, title: '填写邀请码奖励', dateLabel: '2026-10-09' }] }
     if (search.get('state') === 'empty') data.pageData = { ...data.pageData, balance: 0, records: [] }
     if (['error', 'loading', 'guest'].includes(search.get('state'))) data.pageData = null
     if (search.get('state') === 'loading') data.pageBusy = true
@@ -195,7 +205,6 @@ function fixtures(page, search) {
     const state = search.get('state')
     data.filters = { ...data.filters, type: search.get('type') || 'group', coachId: search.get('coach') || 'all', dateKey }
     data.pageData.filters = data.filters
-    data.pageData.selectedCoachName = '李教练'
     data.pageData.coaches = state === 'empty' ? [] : [{ id: 'coach', name: '李教练', title: '教练', avatarText: '李', summaryText: '泰拳 · 体能' }, { id: 'coach2', name: '王教练', title: '教练', avatarText: '王', summaryText: '拳击 · 步法' }]
     if (search.has('many')) data.pageData.coaches = Array.from({ length: 80 }, (_, index) => ({ id: index ? 'coach' + (index + 1) : 'coach', name: ['李教练', '王教练', '陈教练', '张教练'][index % 4] + (index > 3 ? ' ' + (index + 1) : ''), title: index % 2 ? '拳击与专项体能教练' : '泰拳与体能教练', avatarText: ['李', '王', '陈', '张'][index % 4], summaryText: '泰拳 · 体能 · 步法' }))
     data.pageData.privateCoachPreview = data.pageData.coaches.slice(0, 3)
@@ -205,7 +214,7 @@ function fixtures(page, search) {
     data.pageData.hasMoreCoachOptions = data.pageData.coaches.length > 20
     data.pageData.privateBusyTimes = [{ id: 'busy', timeRange: '14:00 - 15:30' }]
     if (search.has('unlimited')) data.pageData.assets = { ...assets, groupUnlimited: true, privateUnlimited: true, groupUnlimitedExpiry: '2027-03-30', privateUnlimitedExpiry: '2027-09-30' }
-    if (state === 'pending') data.privatePending = { requestId: 'pending-private', date: dateKey, start: '10:15', end: '11:45' }
+    if (state === 'pending') data.privatePending = { requestId: 'pending-private', coachName: '李教练', storeName: stores[0].name, date: dateKey, start: '10:15', end: '11:45' }
     data.pageData.schedules = data.pageData.schedules.map((item) => ({ ...item,
       type: search.get('type') === 'private' ? 'private' : 'group',
       typeLabel: search.get('type') === 'private' ? '专属训练' : '团体训练',
@@ -331,7 +340,7 @@ function html(page, search = new URLSearchParams()) {
   const wxml = parseWxml(fs.readFileSync(path.join(mini, 'pages', page, 'index.wxml'), 'utf8'))
   const styles = ['app.wxss', 'components/app-tabbar/index.wxss', 'components/page-feedback/index.wxss', 'components/language-setting/index.wxss', 'components/media-privacy/index.wxss', `pages/${page}/index.wxss`].map((file) => readStyles(path.join(mini, file))).join('\n').replace(/(-?\d+(?:\.\d+)?)rpx/g, 'calc($1 * var(--unit))').replace(/(?<![\w.-])page\s*\{/g, 'body {').replace(/(?<![\w-])view(?![\w-])/g, 'div').replace(/(?<![\w-])text(?![\w-])/g, 'span').replace(/(?<![\w-])image(?![\w-])/g, 'img')
   const menu = pageNames.map((name) => `<a href="/preview/${name}">${name}</a>`).join('')
-  return `<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ONE · ${escape(page)} 布局预览</title><style>:root{--unit:calc(min(100vw,430px) / 750)}body{margin:0}main{max-width:430px;margin:auto}button{cursor:pointer;font-family:inherit}img{object-fit:cover}a{text-decoration:none;color:inherit}input,textarea{font-family:inherit}input{outline:none}nav{display:none}${nativeButtonStyles}${styles}\n.tabbar-wrap{width:min(100vw,430px);right:auto;left:50%;transform:translateX(-50%)}.scroll-row,.facility-scroll{overflow-x:auto}.sheet-scroll{overflow-y:auto}.home-hero-cta{width:fit-content} [data-preview-action]{cursor:pointer}</style></head><body><nav>${menu}</nav><main>${renderChildren(wxml.children, data)}</main><script>document.addEventListener('click',function(event){const el=event.target.closest('[data-preview-action]');if(!el)return;const a=el.dataset.previewAction;const routes={goPoints:'/preview/points',goBooking:'/preview/booking?type='+(el.dataset.type||'group'),goMySchedule:'/preview/profile',goIdentityQr:'/preview/profile',goLogin:'/preview/login',goBrowse:'/preview/home',onOpenUserManage:'/preview/admin/users',onOpenPackageManage:'/preview/admin/packages',onOpenStoreManage:'/preview/admin/stores',onOpenOperations:'/preview/workspace',goClassDetail:'/preview/workspace/class'};if(routes[a])location.href=routes[a];else if(a==='onTap')location.href='/preview/'+el.dataset.path.replace('/pages/','').replace('/index','');else if(a==='onTapAction')location.href='/preview/workspace/'+el.dataset.actionId;else if(['onTogglePricing','onToggleFilters','onOpenCoachPicker','onToggleAuditLogs'].includes(a))location.search='?expanded=1';else if(['onOpenCreatePopup','onOpenCreate','onOpenCreateStore','onOpenCreatePopup','openNicknameEditor'].includes(a))location.search='?popup=1';else if(['onCloseCreatePopup','onCloseStorePopup','closeNicknameEditor','onCloseCoachPicker'].includes(a))location.search='';else if(a==='onOpenGallery')location.search='?popup=gallery';else if(a==='onCloseGallery')location.search='';else if(a==='onToggleInvite')location.search='?invite=form';else if(a==='onViewAssets')location.search='?popup=assets';else if(a==='onCloseAssets')location.search='';else if(a==='onBook')alert('这是布局预览，不会提交真实预约。');});</script></body></html>`
+  return `<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ONE · ${escape(page)} 布局预览</title><style>:root{--unit:calc(min(100vw,430px) / 750)}body{margin:0}main{max-width:430px;margin:auto}button{cursor:pointer;font-family:inherit}img{object-fit:cover}a{text-decoration:none;color:inherit}input,textarea{font-family:inherit}input{outline:none}nav{display:none}${nativeButtonStyles}${styles}\n.tabbar-wrap{width:min(100vw,430px);right:auto;left:50%;transform:translateX(-50%)}.scroll-row,.facility-scroll{overflow-x:auto}.sheet-scroll{overflow-y:auto} [data-preview-action]{cursor:pointer}</style></head><body><nav>${menu}</nav><main>${renderChildren(wxml.children, data)}</main><script>document.addEventListener('click',function(event){const el=event.target.closest('[data-preview-action]');if(!el)return;const a=el.dataset.previewAction;const routes={onViewStore:'/preview/home?popup=store-detail',onOpenStorePicker:'/preview/home?popup=stores',goPoints:'/preview/points',goPointsMall:'/preview/mall',goBooking:'/preview/booking?type='+(el.dataset.type||'group'),goMySchedule:'/preview/profile',goIdentityQr:'/preview/profile',goLogin:'/preview/login',goBrowse:'/preview/home',onOpenUserManage:'/preview/admin/users',onOpenPackageManage:'/preview/admin/packages',onOpenStoreManage:'/preview/admin/stores',onOpenOperations:'/preview/workspace',goClassDetail:'/preview/workspace/class'};if(routes[a])location.href=routes[a];else if(a==='onChangeCoach'){const params=new URLSearchParams(location.search);params.delete('coach');params.delete('expanded');location.search=params.toString();}else if(a==='onTap')location.href='/preview/'+el.dataset.path.replace('/pages/','').replace('/index','');else if(a==='onTapAction')location.href='/preview/workspace/'+el.dataset.actionId;else if(['onTogglePricing','onToggleFilters','onOpenCoachPicker','onToggleAuditLogs'].includes(a))location.search='?expanded=1';else if(['onOpenCreatePopup','onOpenCreate','onOpenCreateStore','onOpenCreatePopup','openNicknameEditor'].includes(a))location.search='?popup=1';else if(['onCloseCreatePopup','onCloseStorePopup','closeNicknameEditor','onCloseCoachPicker'].includes(a))location.search='';else if(a==='onOpenGallery')location.search='?popup=gallery';else if(a==='onCloseGallery')location.search='';else if(a==='onToggleInvite')location.search='?invite=form';else if(a==='onViewAssets')location.search='?popup=assets';else if(a==='onCloseAssets')location.search='';else if(a==='onBook')alert('这是布局预览，不会提交真实预约。');});</script></body></html>`
 }
 
 if (require.main === module) {

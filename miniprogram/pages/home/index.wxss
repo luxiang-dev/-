@@ -5,25 +5,40 @@
 .home-store-trigger { display:flex; align-items:center; gap:8rpx; font-size:23rpx; min-height:64rpx; max-width:310rpx; }
 .store-indicator { width:10rpx; height:10rpx; background:#c7452d; border-radius:50%; flex-shrink:0; }
 .home-chevron { color:#7c8076; font-size:30rpx; }
-.home-hero { position:relative; height:640rpx; border-radius:16rpx; overflow:hidden; background:#20251f; }
-.home-hero-image,.home-hero-shade { position:absolute; width:100%; height:100%; left:0; top:0; }
-.home-hero-shade { background:linear-gradient(90deg,rgba(17,23,17,.91),rgba(17,23,17,.18)),linear-gradient(0deg,rgba(17,23,17,.82),transparent 50%); }
-.home-hero-content { position:relative; padding:50rpx 36rpx; }
-.home-hero-kicker { color:#e1e3d6; font-size:19rpx; letter-spacing:3rpx; }
-.home-hero-title { color:#fffef5; margin-top:40rpx; font-size:62rpx; font-weight:600; line-height:1.34; letter-spacing:1rpx; }
-.home-hero-subtitle { color:#c5c8bb; font-size:25rpx; margin-top:24rpx; }
-.home-hero-cta { display:inline-flex; align-items:center; gap:40rpx; margin:42rpx 0 0; width:auto; padding:0 24rpx; line-height:84rpx; border-radius:8rpx; background:#c7452d; color:white; font-size:25rpx; font-weight:600; }
-.home-hero-cta text { font-size:32rpx; }
-.home-hero-bottom { position:absolute; left:36rpx; right:36rpx; bottom:28rpx; display:flex; justify-content:space-between; gap:12rpx; border-top:1rpx solid rgba(255,255,255,.2); padding-top:20rpx; font-size:18rpx; letter-spacing:1rpx; color:#d1d3c7; }
-.home-notice { display:flex; align-items:center; gap:16rpx; margin-top:20rpx; padding:22rpx 0; border-bottom:1rpx solid #dddfd3; color:#6b725f; font-size:23rpx; line-height:1.6; }
-.notice-dot { width:8rpx; height:8rpx; background:#c7452d; border-radius:50%; flex-shrink:0; }.notice-copy { flex:1; }
-.home-section-head { display:flex; justify-content:space-between; align-items:center; gap:12rpx; margin:40rpx 0 22rpx; }.home-small-label { font-size:18rpx; letter-spacing:2rpx; color:#929789; }
-.home-training-grid { display:grid; grid-template-columns:1fr 1fr; gap:16rpx; }.home-training-card { padding:26rpx; background:#e9ecdf; border-radius:12rpx; }.training-private { background:#eee8dd; }.training-number { display:flex; justify-content:space-between; font-size:21rpx; color:#7c8272; }.training-number text { font-size:32rpx; }.training-title { font-size:36rpx; font-weight:600; margin-top:26rpx; }.training-description { font-size:22rpx; color:#767c6e; margin-top:12rpx; line-height:1.5; }.training-tag { margin-top:28rpx; color:#3b4534; font-size:23rpx; }
-.home-member-links { display:flex; margin-top:20rpx; border:1rpx solid #e1e3d7; border-radius:12rpx; background:#fff; }.home-member-links>view { flex:1; position:relative; padding:24rpx; }.home-member-links>view+view { border-left:1rpx solid #e1e3d7; }.member-link-title { display:block; font-size:26rpx; font-weight:600; }.member-link-desc { display:block; margin-top:10rpx; font-size:21rpx; color:#828778; }.member-link-arrow { position:absolute; right:18rpx; top:22rpx; font-size:36rpx; color:#8b907f; }
-.facility-scroll { white-space:nowrap; }.facility-card { display:inline-block; width:440rpx; margin-right:18rpx; overflow:hidden; border-radius:12rpx; vertical-align:top; background:#fff; }.facility-image { width:100%; height:290rpx; display:block; }.facility-caption { display:flex; gap:16rpx; padding:22rpx; font-size:23rpx; color:#414c36; white-space:normal; line-height:1.5; }.facility-caption text:first-child { color:#9a9e90; font-size:19rpx; }
-.home-pricing { margin-top:32rpx; }.pricing-list { margin-top:26rpx; }.pricing-item { display:flex; align-items:center; justify-content:space-between; gap:20rpx; padding:24rpx 0; border-top:1rpx solid #e5e6df; }.pricing-tag { font-size:20rpx; color:#8c5b48; }.pricing-name { font-size:28rpx; margin-top:10rpx; font-weight:600; }.pricing-meta,.pricing-note { margin-top:10rpx; font-size:21rpx; color:#84897b; }.pricing-price-wrap { flex-shrink:0; text-align:right; }.pricing-price { font-size:36rpx; font-weight:600; }.home-address { margin-top:36rpx; padding:24rpx 0; border-top:1rpx solid #dddfd3; }.home-footer { font-size:21rpx; color:#9a9e90; text-align:center; margin:28rpx 0; }
-.facility-caption text:first-child { flex-shrink: 0; }
-.facility-caption text:last-child { min-width: 0; word-break: break-word; }
+.home-hero { position: relative; display: flex; align-items: flex-end; min-height: 326rpx; border-radius: 20rpx; overflow: hidden; background: #20251f; }
+.home-hero-image,.home-hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.home-hero-shade { background: linear-gradient(0deg, rgba(17,23,17,.94), rgba(17,23,17,.54) 45%, rgba(17,23,17,.06) 85%); }
+.home-hero-content { position: relative; width: 100%; padding: 96rpx 28rpx 26rpx; }
+.home-hero-title { color: #fffef5; font-size: 44rpx; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.home-hero-address { color: #f2f1e7; font-size: 23rpx; margin-top: 12rpx; line-height: 1.5; overflow-wrap: anywhere; }
+.home-hero-link { display: inline-flex; align-items: center; min-height: 60rpx; color: #fff; font-size: 23rpx; line-height: 1.5; text-decoration: underline; }
+.home-notice { display: flex; align-items: center; gap: 16rpx; margin-top: 18rpx; padding: 20rpx 0; border-bottom: 1rpx solid #dddfd3; color: #626959; font-size: 23rpx; line-height: 1.6; }
+.notice-dot { width: 8rpx; height: 8rpx; background: #c7452d; border-radius: 50%; flex-shrink: 0; }
+.notice-copy { flex: 1; }
+.home-section-head { display: flex; justify-content: space-between; align-items: center; gap: 12rpx; margin: 34rpx 0 16rpx; }
+.home-training-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16rpx; }
+.home-training-grid button.home-training-card {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 14rpx;
+  width: 100%; min-height: 142rpx; padding: 22rpx; margin: 0;
+  border-radius: 16rpx; color: #fff; background: #ae3827; text-align: left;
+  font-size: 24rpx; line-height: 1.4; white-space: normal; overflow-wrap: anywhere;
+}
+.home-training-grid button.training-private { background: #27372d; }
+.training-title { font-size: 30rpx; font-weight: 700; }
+.training-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10rpx; width: 100%; }
+.training-card-footer text:last-child { flex-shrink: 0; font-size: 30rpx; }
+.home-member-links { display: flex; margin-top: 18rpx; border: 1rpx solid #e1e3d7; border-radius: 16rpx; background: #fff; }
+.home-member-links>view { flex: 1; min-width: 0; position: relative; padding: 22rpx 40rpx 22rpx 22rpx; overflow-wrap: anywhere; }
+.home-member-links>view+view { border-left: 1rpx solid #e1e3d7; }
+.member-link-title { display: block; font-size: 26rpx; font-weight: 600; }
+.member-link-desc { display: block; margin-top: 8rpx; font-size: 21rpx; color: #626959; }
+.member-link-arrow { position: absolute; right: 16rpx; top: 19rpx; font-size: 34rpx; color: #626959; }
+.facility-scroll { white-space: nowrap; }
+.facility-card { display: inline-block; width: 440rpx; margin-right: 18rpx; overflow: hidden; border-radius: 12rpx; vertical-align: top; background: #fff; }
+.facility-image { width: 100%; height: 290rpx; display: block; }
+.facility-caption { padding: 18rpx 22rpx; font-size: 23rpx; color: #414c36; white-space: normal; line-height: 1.5; overflow-wrap: anywhere; }
+.home-pricing { margin-top: 32rpx; }
+.pricing-list { margin-top:26rpx; }.pricing-item { display:flex; align-items:center; justify-content:space-between; gap:20rpx; padding:24rpx 0; border-top:1rpx solid #e5e6df; }.pricing-tag { font-size:20rpx; color:#8c5b48; }.pricing-name { font-size:28rpx; margin-top:10rpx; font-weight:600; }.pricing-meta,.pricing-note { margin-top:10rpx; font-size:21rpx; color:#84897b; }.pricing-price-wrap { flex-shrink:0; text-align:right; }.pricing-price { font-size:36rpx; font-weight:600; }
 .store-picker-mask { position: fixed; inset: 0; z-index: 130; display: flex; align-items: flex-end; background: rgba(19,28,21,.5); }
 .store-picker-panel { display: flex; flex-direction: column; width: 100%; height: 86vh; max-height: 86vh; overflow: hidden; border-radius: 30rpx 30rpx 0 0; background: #f5f4ef; }
 .store-picker-header { flex-shrink: 0; display: flex; align-items: center; gap: 20rpx; padding: 28rpx 28rpx 14rpx; }

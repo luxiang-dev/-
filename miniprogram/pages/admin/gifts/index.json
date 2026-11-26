@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "积分礼品管理",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "media-privacy": "/components/media-privacy/index"
+  }
+}

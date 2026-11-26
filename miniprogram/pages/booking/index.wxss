@@ -1,18 +1,23 @@
-.booking-title-row {
-  margin-top: 6rpx;
+.booking-page .art-header,
+.booking-page .art-header-content {
+  min-height: 154rpx;
 }
 
-.filter-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 22rpx;
-  background: #f9eae4;
-  color: #c7452d;
-  font-size: 22rpx;
-  font-weight: 600;
+.booking-page .art-header-content {
+  padding: 24rpx 26rpx;
+}
+
+.booking-page .art-header .page-title {
+  margin: 0;
+  font-size: 38rpx;
+}
+
+.booking-page .art-header .page-subtitle {
+  margin-top: 8rpx;
+}
+
+.booking-controls {
+  padding: 18rpx;
 }
 
 .booking-type-switch {
@@ -25,8 +30,12 @@
 }
 
 .booking-type-tab {
-  min-height: 72rpx;
-  line-height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 66rpx;
+  padding: 8rpx 10rpx;
+  line-height: 1.35;
   text-align: center;
   color: #73786e;
   font-size: 24rpx;
@@ -40,36 +49,11 @@
   box-shadow: 0 14rpx 28rpx rgba(199, 69, 45, 0.2);
 }
 
-.booking-filter-row,
-.date-scroll {
-  margin-top: 18rpx;
-}
-
-.coach-filter-trigger {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  min-width: 240rpx;
-  min-height: 72rpx;
-  padding: 0 20rpx;
-  border: 1rpx solid #e1e3d9;
-  border-radius: 24rpx;
-  background: #ffffff;
-}
-
-.coach-filter-trigger.active {
-  border-color: #c7452d;
-}
-
-.coach-filter-label {
-  font-size: 24rpx;
-  color: #20251f;
-  font-weight: 600;
-}
-
-.coach-filter-arrow {
-  font-size: 20rpx;
-  color: #7c8076;
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6rpx;
+  margin-top: 16rpx;
 }
 
 .booking-result-count {
@@ -80,13 +64,16 @@
 }
 
 .date-card {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 112rpx;
-  height: 118rpx;
-  margin-right: 12rpx;
-  padding: 16rpx 14rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  min-height: 88rpx;
+  min-width: 0;
+  padding: 8rpx 2rpx;
+  text-align: center;
+  overflow-wrap: anywhere;
   border: 1rpx solid #e1e3d9;
   border-radius: 16rpx;
   background: #ffffff;
@@ -104,7 +91,8 @@
 }
 
 .date-card-label {
-  font-size: 28rpx;
+  font-size: 22rpx;
+  font-variant-numeric: tabular-nums;
   color: #20251f;
   font-weight: 600;
   line-height: 1.2;
@@ -113,9 +101,8 @@
 .booking-schedule-section { margin-top: 32rpx; }
 .booking-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 0 4rpx 4rpx; }
 .booking-section-heading .section-title { color: #20251f; font-size: 28rpx; }
-.booking-section-hint { font-size: 21rpx; color: #92968b; }
 .booking-schedule-card { margin-top: 20rpx; padding: 0 28rpx 28rpx; border: 1rpx solid #e4e5dc; border-radius: 24rpx; background: #ffffff; overflow: hidden; }
-.booking-card-header { display: flex; align-items: center; justify-content: space-between; gap: 18rpx; }
+.booking-card-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10rpx 18rpx; }
 .booking-time-range { display: flex; align-items: baseline; gap: 12rpx; white-space: nowrap; }
 .booking-time-main { font-size: 46rpx; line-height: 1.15; letter-spacing: -1rpx; color: #20251f; font-weight: 700; }
 .booking-time-divider { color: #b2b6aa; font-size: 24rpx; }
@@ -124,14 +111,12 @@
 .booking-status-dot { width: 7rpx; height: 7rpx; border-radius: 50%; background: currentColor; }
 .booking-card-status.is-disabled { background: #f1f1eb; color: #8a8e83; }
 .booking-card-status.is-booked { background: #fbede7; color: #b8442d; }
-.booking-card-info { margin-top: 26rpx; }
-.booking-course-type { font-size: 21rpx; color: #b8442d; letter-spacing: 1rpx; }
-.booking-course-type.is-private { color: #73786e; }
+.booking-card-info { margin-top: 10rpx; }
 .booking-card-title { margin-top: 8rpx; font-size: 36rpx; line-height: 1.4; color: #20251f; font-weight: 600; word-break: break-word; }
 .booking-card-meta { display: flex; align-items: baseline; gap: 16rpx; margin-top: 12rpx; font-size: 23rpx; line-height: 1.5; }
 .booking-meta-label { flex-shrink: 0; color: #92968b; }
 .booking-meta-value { min-width: 0; color: #63695e; word-break: break-word; }
-.booking-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 24rpx; margin-top: 26rpx; padding-top: 24rpx; border-top: 1rpx solid #eeefe8; }
+.booking-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 24rpx; margin-top: 16rpx; padding-top: 16rpx; border-top: 1rpx solid #eeefe8; }
 .booking-capacity { flex: 1; min-width: 0; }
 .capacity-label { font-size: 21rpx; color: #92968b; }
 .capacity-value { margin-top: 8rpx; font-size: 27rpx; color: #535b4e; font-weight: 600; line-height: 1.4; }
@@ -150,11 +135,6 @@
 .booking-card-cover .booking-time-end{color:#e5e5d7}.booking-card-cover .booking-time-divider{color:#cdd1c3}
 .booking-card-cover .booking-card-status{background:rgba(248,250,242,.94);max-width:100%;white-space:normal;line-height:1.4}
 .booking-card-cover .booking-card-status.is-booked{background:#fbede7}.booking-card-cover .booking-card-status.is-disabled{background:#efefe8}
-.private-training-feature.private-section-head{position:relative;display:block;overflow:hidden;background:#29362d;border-radius:22rpx;padding:0;margin:28rpx 0 20rpx;min-height:210rpx}
-.private-feature-photo{position:absolute;left:0;top:-12rpx;width:100%;height:440rpx;pointer-events:none}
-.private-feature-shade{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,rgba(20,29,22,.92),rgba(20,29,22,.52) 52%,rgba(20,29,22,.08));pointer-events:none}
-.private-feature-content{position:relative;z-index:1;padding:30rpx 28rpx;min-height:210rpx;width:72%;display:flex;flex-direction:column;justify-content:center}
-.private-feature-kicker{font-size:21rpx;line-height:1.5;color:#dddaca;margin-bottom:10rpx}.private-training-feature .section-title{font-size:30rpx;line-height:1.4;font-weight:600;color:#fff;overflow-wrap:anywhere}.private-training-feature .private-section-count{display:block;color:#dddaca;font-size:22rpx;line-height:1.5;margin-top:12rpx}
 .booking-schedule-section .empty-state { margin-top: 20rpx; padding: 48rpx 28rpx; border: 1rpx dashed #dce0d3; border-radius: 24rpx; background: #faf9f5; }
 
 .coach-drawer-mask {
@@ -169,23 +149,29 @@
 }
 
 .coach-drawer {
+  display: flex;
+  flex-direction: column;
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 121;
   height: 74vh;
-  padding: 28rpx 24rpx 34rpx;
+  padding: 28rpx 24rpx calc(34rpx + env(safe-area-inset-bottom));
   border-radius: 32rpx 32rpx 0 0;
   background: #ffffff;
   box-shadow: 0 -24rpx 80rpx rgba(32, 37, 31, 0.18);
 }
 
 .coach-drawer-header {
+  flex-shrink: 0;
+  gap: 16rpx;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 }
+
+.coach-drawer-header > view:first-child { flex: 1; min-width: 0; }
 
 .coach-drawer-title {
   font-size: 32rpx;
@@ -202,6 +188,7 @@
 }
 
 .coach-drawer-close {
+  flex-shrink: 0;
   width: 58rpx;
   height: 58rpx;
   line-height: 54rpx;
@@ -214,6 +201,7 @@
 }
 
 .coach-search-input {
+  flex-shrink: 0;
   width: 100%;
   height: 76rpx;
   margin-top: 22rpx;
@@ -235,6 +223,7 @@
 
 .coach-option-item {
   display: flex;
+  align-items: center;
   gap: 16rpx;
   padding: 18rpx 8rpx;
   border-bottom: 1rpx solid #e9e9e1;
@@ -246,6 +235,7 @@
 }
 
 .coach-option-avatar {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,14 +261,9 @@
 }
 
 .coach-option-name {
+  overflow-wrap: anywhere;
   font-size: 28rpx;
   color: #20251f;
-  font-weight: 600;
-}
-
-.coach-option-level {
-  font-size: 22rpx;
-  color: #c7452d;
   font-weight: 600;
 }
 
@@ -289,4 +274,220 @@
   color: #7c8076;
 }
 
-.private-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16rpx;margin:28rpx 4rpx 18rpx}.private-section-count{font-size:22rpx;color:#93968c;flex-shrink:0}.private-coach-list{background:#fff;border:1rpx solid #e7e7df;border-radius:24rpx;overflow:hidden}.private-coach-row{display:flex;align-items:center;gap:20rpx;padding:24rpx;border-bottom:1rpx solid #f0f0ea}.private-coach-row:last-child{border-bottom:0}.private-coach-row.selected{background:#fffaf7}.private-coach-avatar{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:88rpx;height:100rpx;border-radius:18rpx;background:#ebece4;color:#666e5f;font-size:34rpx;font-weight:600}.private-coach-main{flex:1;min-width:0}.private-coach-name{font-size:30rpx;font-weight:600;line-height:1.4;overflow-wrap:anywhere}.private-coach-meta{font-size:23rpx;color:#858a7e;line-height:1.5;margin-top:6rpx;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.private-coach-link{font-size:20rpx;color:#9a9d93;line-height:1.5;margin-top:6rpx;overflow-wrap:anywhere}.private-selected-mark{font-size:24rpx;color:#c7452d}.locale-page button.private-coach-select{display:flex;align-items:center;justify-content:center;flex:0 0 112rpx;max-width:112rpx;min-height:64rpx;height:auto;padding:14rpx 8rpx;margin:0;border-radius:14rpx;background:#f9eee8;color:#b8442d;font-size:23rpx;line-height:1.4;text-align:center;white-space:normal;overflow-wrap:anywhere}.locale-page button.private-coach-select.change{background:transparent;border:1rpx solid #e5dcd4}.locale-page button.private-coach-all{display:flex;justify-content:center;align-items:center;gap:14rpx;width:100%;padding:24rpx 20rpx;margin:0;color:#69725f;font-size:24rpx;line-height:1.5;background:#fafaf6;white-space:normal}.private-coach-all text{color:#9ca28f}.coach-drawer{display:flex;flex-direction:column;padding-bottom:calc(34rpx + env(safe-area-inset-bottom))}.coach-drawer-header,.coach-search-input{flex-shrink:0}.coach-drawer-header>view:first-child{flex:1;min-width:0}.coach-drawer-close{flex-shrink:0;margin-left:16rpx}.coach-drawer .coach-option-item{align-items:center}.coach-option-avatar{flex-shrink:0}.coach-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.coach-more-hint{padding:24rpx;text-align:center;color:#93968c;font-size:22rpx;line-height:1.5}.private-time-card{margin-top:24rpx}.private-time-grid{display:flex;gap:20rpx;margin:24rpx 0}.private-time-grid .private-time-picker{flex:1;min-width:0;background:#f4f4ed;border-radius:16rpx;padding:20rpx}.private-time-value{font-size:40rpx;font-weight:600;margin-top:12rpx}.private-busy-list{display:flex;flex-wrap:wrap;gap:12rpx;margin:20rpx 0}.private-busy-list text{padding:10rpx;background:#eff0e9;border-radius:8rpx;font-size:24rpx}.private-note{margin:20rpx 0;line-height:1.7}.locale-page .private-time-card button,.locale-page .private-pending button{width:100%;margin-top:24rpx}
+.private-panel-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10rpx 16rpx;
+  margin-bottom: 18rpx;
+}
+
+.private-section-count {
+  color: #657061;
+  font-size: 22rpx;
+}
+
+.private-coach-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 0;
+  border-top: 1rpx solid #ebece4;
+}
+
+.private-coach-row.selected {
+  padding: 20rpx;
+  border: 1rpx solid #dce4d7;
+  border-radius: 16rpx;
+  background: #f0f3eb;
+}
+
+.private-coach-avatar {
+  display: flex;
+  flex: 0 0 80rpx;
+  align-items: center;
+  justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  background: #304037;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.private-coach-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.private-coach-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.private-coach-meta,
+.private-coach-link {
+  margin-top: 6rpx;
+  color: #596557;
+  font-size: 22rpx;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.private-coach-link {
+  color: #903a29;
+}
+
+.locale-page button.private-coach-select,
+.locale-page button.private-coach-control,
+.locale-page button.private-coach-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 68rpx;
+  margin: 0;
+  padding: 12rpx 16rpx;
+  border-radius: 12rpx;
+  background: #f5ede7;
+  color: #903a29;
+  font-size: 23rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.locale-page button.private-coach-select {
+  flex: 0 1 126rpx;
+  max-width: 31%;
+}
+
+.locale-page button.private-coach-control {
+  max-width: 100%;
+  background: #edf1ea;
+  color: #314637;
+}
+
+.locale-page button.private-coach-all {
+  width: 100%;
+  margin-top: 8rpx;
+  background: #edf1ea;
+  color: #314637;
+}
+
+.locale-page button.private-coach-select[disabled],
+.locale-page button.private-coach-control[disabled],
+.locale-page button.private-coach-all[disabled] {
+  opacity: .55;
+}
+
+.private-coach-empty { padding-bottom: 8rpx; }
+
+.coach-summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.coach-more-hint {
+  padding: 24rpx;
+  text-align: center;
+  color: #657061;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.private-time-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.private-time-picker {
+  display: block;
+  min-width: 0;
+  padding: 16rpx;
+  border: 1rpx solid #e0e4d9;
+  border-radius: 14rpx;
+  background: #f5f6f1;
+}
+
+.private-time-label {
+  color: #586356;
+  font-size: 23rpx;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.private-time-value {
+  display: flex;
+  justify-content: space-between;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  color: #213229;
+  font-size: 34rpx;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.private-time-value text { color: #687565; }
+
+.private-busy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10rpx 16rpx;
+  margin-top: 18rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #e9ebe3;
+}
+
+.private-busy-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.private-busy-list text {
+  padding: 6rpx 12rpx;
+  border-radius: 8rpx;
+  background: #f5ece6;
+  color: #803d2f;
+  font-size: 22rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.private-busy-empty {
+  color: #657061;
+  font-size: 22rpx;
+}
+
+.private-pending {
+  border-color: #e8cdb9;
+  background: #fffbf5;
+}
+
+.private-pending-details {
+  margin: 14rpx 0;
+  color: #26322a;
+  font-size: 26rpx;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.private-note { margin-top: 18rpx; }
+
+.locale-page .private-time-card button,
+.locale-page .private-pending button {
+  width: 100%;
+  height: auto;
+  margin: 18rpx 0 0;
+}

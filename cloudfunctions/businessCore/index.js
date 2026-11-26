@@ -21,6 +21,8 @@ const COLLECTIONS = {
   BOOKING: 'biz_booking',
   INVITE_CODE: 'user_invite_code',
   POINT_LOG: 'user_point_log',
+  POINT_GIFT: 'point_gift',
+  POINT_REDEMPTION: 'point_redemption',
 }
 
 // 同一热实例共享初始化结果；失败时清空 Promise，让下一次请求可以重试。
@@ -1029,12 +1031,20 @@ async function getBookingViewData(event) {
       payload.filters || {}
     )
 
-    const [stores, coaches, schedules, bookings, assets] = await Promise.all([
+    const scheduleQuery = { is_deleted: false, store_id: payload.storeId }
+    // 旧客户端使用全部排课日期，新客户端在本地生成日期条。
+    if (payload.includeScheduleDates === false && /^\d{4}-\d{2}-\d{2}$/.test(filters.dateKey)) {
+      scheduleQuery.start_time = _.gte(filters.dateKey).and(_.lte(filters.dateKey + '\uffff'))
+      if (filters.coachId !== 'all') scheduleQuery.coach_id = filters.coachId
+    }
+    const selectedPrivateCoach = filters.type === 'private' && filters.coachId && filters.coachId !== 'all'
+    const [stores, coaches, schedules, bookings, assets, coachSchedules] = await Promise.all([
       listCollection(COLLECTIONS.STORE, { is_deleted: false, status: 1 }),
-      listCollection(COLLECTIONS.USER, { is_deleted: false, status: 1 }).then((users) => users.filter((user) => [2, 3].includes(Number(user.role)))),
-      listAllCollection(COLLECTIONS.CLASS_SCHEDULE, { is_deleted: false, store_id: payload.storeId }),
-      payload.userId ? listCollection(COLLECTIONS.BOOKING, { is_deleted: false, user_id: payload.userId }) : [],
+      listCollection(COLLECTIONS.USER, { is_deleted: false, status: 1, role: _.in([2, 3, '2', '3']) }),
+      listAllCollection(COLLECTIONS.CLASS_SCHEDULE, scheduleQuery),
+      payload.userId ? listCollection(COLLECTIONS.BOOKING, { is_deleted: false, user_id: payload.userId, status: _.in([1, '1']) }) : [],
       payload.userId ? listCollection(COLLECTIONS.USER_ASSET, { is_deleted: false, user_id: payload.userId }) : [],
+      selectedPrivateCoach ? listAllCollection(COLLECTIONS.CLASS_SCHEDULE, { is_deleted: false, coach_id: filters.coachId }) : [],
     ])
 
     const pendingBookingIdSet = new Set(
@@ -1070,9 +1080,8 @@ async function getBookingViewData(event) {
       }))
 
     let privateBusyTimes = []
-    if (filters.type === 'private') {
-      const allSchedules = await listAllCollection(COLLECTIONS.CLASS_SCHEDULE, { is_deleted: false })
-      privateBusyTimes = allSchedules.filter(s => s.coach_id === filters.coachId && !s.manual_only && Number(s.status) !== 4 && !(s.direct_private && Number(s.booked_count) === 0) && businessDate(s.start_time) === (filters.dateKey || businessDate())).map(s => ({ id: s._id, timeRange: formatTimeRange(s.start_time, s.end_time) }))
+    if (selectedPrivateCoach) {
+      privateBusyTimes = coachSchedules.filter(s => !s.manual_only && Number(s.status) !== 4 && !(s.direct_private && Number(s.booked_count) === 0) && businessDate(s.start_time) === (filters.dateKey || businessDate())).map(s => ({ id: s._id, timeRange: formatTimeRange(s.start_time, s.end_time) }))
     }
     const dateMap = new Map()
     schedules.forEach((item) => {
@@ -2201,6 +2210,16 @@ async function createAssetDistribution(event) {
   }
 
   try {
+    // 成功回执先于当前套餐状态校验；下架或撤销后重试仍核对原操作。
+    if(payload.requestId&&/^[\w-]{10,100}$/.test(payload.requestId)&&payload.expiryDate){
+      const id='distribution_'+crypto.createHash('sha256').update(event.operator._id+':'+payload.requestId).digest('hex')
+      const receipt=(await getDocById(COLLECTIONS.USER_ASSET_LOG,id)).data
+      if(receipt){
+        const fingerprint=JSON.stringify([payload.userId,payload.packageId,payload.expiryDate,normalizeAmount(payload.offlineAmount),payload.payType,payload.remark||'',payload.storeId||event.operator.home_store_id])
+        if(receipt.request_fingerprint!==fingerprint)return buildFail('请求内容已变化，请刷新后重试','INVALID_DISTRIBUTION_REQUEST')
+        return buildSuccess({message:'派课成功',repeated:true,expiryDate:receipt.usage_mode==='unlimited'?receipt.after_asset.unlimited_expiry_date:receipt.after_asset.expiry_date})
+      }
+    }
     const packageRecord = await getDocById(COLLECTIONS.PACKAGE, payload.packageId)
     const userRecord = await getDocById(COLLECTIONS.USER, payload.userId)
     const operatorRecord = await getDocById(COLLECTIONS.USER, payload.operatorId)
@@ -2228,8 +2247,15 @@ async function createAssetDistribution(event) {
       return buildFail('实收金额必须为非负数', 'INVALID_AMOUNT')
     }
 
-    const distributionId = 'distribution_' + crypto.randomBytes(16).toString('hex')
+    if (payload.requestId && !/^[\w-]{10,100}$/.test(payload.requestId)) return buildFail('请求内容已变化，请刷新后重试', 'INVALID_DISTRIBUTION_REQUEST')
+    const distributionId = 'distribution_' + (payload.requestId ? crypto.createHash('sha256').update(event.operator._id + ':' + payload.requestId).digest('hex') : crypto.randomBytes(16).toString('hex'))
+    const fingerprint = JSON.stringify([payload.userId,payload.packageId,expiryDate,normalizeAmount(payload.offlineAmount),payload.payType,payload.remark||'',storeId])
     const transactionResult = await runBusinessTransaction(async (transaction) => {
+      const receipt = (await getDocById(COLLECTIONS.USER_ASSET_LOG, distributionId, transaction)).data
+      if (receipt) {
+        if (receipt.request_fingerprint !== fingerprint) throw new Error('请求内容已变化，请刷新后重试')
+        return { assetDocId, lessonCount, unlimited, expiryDate: receipt.usage_mode === 'unlimited' ? receipt.after_asset.unlimited_expiry_date : receipt.after_asset.expiry_date, repeated: true }
+      }
       const assetData = (await getDocById(COLLECTIONS.USER_ASSET, assetDocId, transaction)).data
 
       const beforeAsset = { unlimited_start_date: assetData && assetData.unlimited_start_date || '', unlimited_expiry_date: assetData && assetData.unlimited_expiry_date || '', unlimited_usage_version: Number(assetData && assetData.unlimited_usage_version || 0), balance: Number(assetData && assetData.balance || 0), total_earned: Number(assetData && assetData.total_earned || 0), expiry_date: assetData && assetData.expiry_date || '', is_deleted: Boolean(assetData && assetData.is_deleted), exists: Boolean(assetData) }
@@ -2267,8 +2293,10 @@ async function createAssetDistribution(event) {
         })
       }
 
+      const referral = await pointsMall.consumption(transaction, distributionId, payload.userId, normalizeAmount(payload.offlineAmount), event.operator._id)
       await transaction.collection(COLLECTIONS.USER_ASSET_LOG).doc(distributionId).set({
         data: {
+          ...referral, request_fingerprint: fingerprint,
           usage_mode: unlimited ? 'unlimited' : 'count', previous_unlimited_distribution_id: assetData && assetData.last_unlimited_distribution_id || '', before_asset: beforeAsset, after_asset: afterAsset, balance_reset: balanceReset, previous_distribution_id: assetData && assetData.last_distribution_id || '',
           before_balance: beforeAsset.balance, after_balance: afterAsset.balance,
           user_id: payload.userId,
@@ -2676,8 +2704,9 @@ async function getPointsViewData(event) {
     const user = (await getDocById(COLLECTIONS.USER, userId)).data
     requirePointUser(user)
     const logs = (await db.collection(COLLECTIONS.POINT_LOG).where({ user_id: userId }).orderBy('created_at', 'desc').limit(50).get()).data
-    return buildSuccess({ balance: Number(user.point_balance || 0), inviteCode, bound: Boolean(user.invited_by), boundCode: user.bound_invite_code || '', reward: 100,
-      records: logs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map(log => ({ id: log._id, amount: log.amount, title: log.reason === 'INVITE' ? '邀请好友奖励' : '填写邀请码奖励', dateLabel: businessDate(log.created_at) })) })
+    const titles = { INVITE:'邀请好友奖励', BIND:'填写邀请码奖励', CONSUMPTION:'好友消费返积分', REVERSAL:'消费撤销扣回积分', REDEEM:'礼品兑换', REDEEM_CANCEL:'兑换取消返还积分' }
+    return buildSuccess({ balance: Number(user.point_balance || 0), inviteCode, bound: Boolean(user.invited_by), boundCode: user.bound_invite_code || '', reward: 0, rewardRate: (await pointsMall.rule()).rate,
+      records: logs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map(log => ({ id: log._id, amount: log.amount, title: titles[log.reason] || '积分明细', dateLabel: businessDate(log.created_at) })) })
   } catch (error) { return buildFail(error.message || error.errMsg, 'POINTS_VIEW_ERROR') }
 }
 
@@ -2689,28 +2718,25 @@ async function bindInviteCode(event) {
       const userId = event.operator._id
       const user = (await getDocById(COLLECTIONS.USER, userId, transaction)).data
       requirePointUser(user)
-      // 原码重试幂等，网络超时后再次提交不会重复加分。
+      // 原码重试幂等，绑定仅建立邀请关系，不赠送积分。
       if (user.invited_by) {
-        if (user.bound_invite_code === code) return { repeated: true, balance: Number(user.point_balance || 0), message: '该邀请码已绑定，积分已到账' }
-        throw new Error('你已绑定过邀请码，不能更换或再次领取奖励')
+        if (user.bound_invite_code === code) return { repeated: true, balance: Number(user.point_balance || 0), message: '邀请码已绑定' }
+        throw new Error('你已绑定过邀请码，不能更换')
       }
       const invite = (await getDocById(COLLECTIONS.INVITE_CODE, code, transaction)).data
       if (!invite) throw new Error('邀请码不存在，请向好友确认后重新输入')
       if (invite.user_id === userId) throw new Error('不能填写自己的邀请码，请输入好友的邀请码')
       const inviter = (await getDocById(COLLECTIONS.USER, invite.user_id, transaction)).data
-      if (!inviter || inviter.is_deleted || Number(inviter.status) !== 1) throw new Error('该邀请码所属账号已停用，暂时不能领取奖励')
-      await transaction.collection(COLLECTIONS.USER).doc(userId).update({ data: { invited_by: inviter._id, bound_invite_code: code, invite_bound_at: db.serverDate(), point_balance: _.inc(100) } })
-      await transaction.collection(COLLECTIONS.USER).doc(inviter._id).update({ data: { point_balance: _.inc(100) } })
-      for (const entry of [{ user_id: userId, reason: 'BIND' }, { user_id: inviter._id, reason: 'INVITE' }]) {
-        await transaction.collection(COLLECTIONS.POINT_LOG).doc(userId + '_' + entry.reason).set({ data: { ...entry, amount: 100, related_user_id: entry.reason === 'BIND' ? inviter._id : userId, created_at: db.serverDate() } })
-      }
-      return { repeated: false, balance: Number(user.point_balance || 0) + 100, message: '绑定成功，你和好友各获得100积分' }
+      if (!inviter || inviter.is_deleted || Number(inviter.status) !== 1) throw new Error('该邀请码所属账号已停用，暂时不能绑定')
+      await transaction.collection(COLLECTIONS.USER).doc(userId).update({ data: { invited_by: inviter._id, bound_invite_code: code, invite_bound_at: db.serverDate() } })
+      return { repeated: false, balance: Number(user.point_balance || 0), message: '邀请码已绑定' }
     })
     return buildSuccess(result)
   } catch (error) { return buildFail(error.message || error.errMsg, 'BIND_INVITE_ERROR') }
 }
 
-const adjustments = require('./adjustments')({ db, collections: COLLECTIONS, getDocById, listAllCollection, runBusinessTransaction, lockReservationTimeline, buildSuccess, buildFail })
+const pointsMall = require('./points-mall')({ db, cloud, collections: COLLECTIONS, getDocById, listAllCollection, runBusinessTransaction, buildSuccess, buildFail })
+const adjustments = require('./adjustments')({ db, collections: COLLECTIONS, getDocById, listAllCollection, runBusinessTransaction, lockReservationTimeline, reverseConsumption: pointsMall.reverseConsumption, buildSuccess, buildFail })
 
 const privateBooking = require('./private-booking')({ db, collections: COLLECTIONS, getDocById, listAllCollection, runBusinessTransaction, lockReservationTimeline, buildSuccess, buildFail })
 
@@ -2734,6 +2760,12 @@ exports.main = async (event = {}) => {
     return buildFail(error.message || '身份验证失败，请重试', error.code || 'AUTH_ERROR')
   }
   switch (event.action) {
+    case 'getPointsMallData':
+    case 'getGiftManageData':
+    case 'savePointGift':
+    case 'redeemPointGift':
+    case 'savePointsRule':
+    case 'handleGiftRedemption': return pointsMall[event.action](event)
     case 'getCoachProfile':
     case 'getOwnCoachProfile':
     case 'getMediaUploadData':

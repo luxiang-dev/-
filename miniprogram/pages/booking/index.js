@@ -69,8 +69,6 @@ function decorateBookingPageData(pageData, filters, coachKeyword, coachOptionsLi
     hasMoreCoachOptions: filteredCoachOptions.length > coachOptionsLimit,
     privateCoachPreview: normalizedCoaches.slice(0, 3),
     selectedCoach: selectedCoach || null,
-    selectedCoachName: selectedCoach ? selectedCoach.name : '全部人员',
-    selectedCoachTitle: selectedCoach ? selectedCoach.title : '全部人员',
     resultCount: (safeData.schedules || []).length,
     dates: buildNextSevenDays(),
     schedules: (safeData.schedules || []).map(decorateSchedule),
@@ -109,8 +107,11 @@ Page(withPageState({
   },
 
   onLoad(options) {
+    const type = options.type === 'private' ? 'private' : 'group'
     this.setData({ filters: Object.assign({}, this.data.filters, {
-      type: options.type === 'private' ? 'private' : 'group', coachId: options.coachId || 'all', dateKey: buildNextSevenDays()[0].key,
+      type,
+      coachId: type === 'private' ? options.coachId || 'all' : 'all',
+      dateKey: buildNextSevenDays()[0].key,
     }) })
   },
 
@@ -124,7 +125,16 @@ Page(withPageState({
     const app = getApp()
     const cacheKey = buildBookingCacheKey(runtime, this.data.filters)
     const cachedPageData = app.getViewCache(cacheKey)
-    const pageData = cachedPageData || app.getBookingPageData(this.data.filters)
+    let pageData = cachedPageData
+    if (!pageData) {
+      pageData = app.getBookingPageData(this.data.filters)
+      const previousStore = this.data.runtime.currentStore
+      const previousCoaches = this.data.pageData.coaches
+      if (this.data.filters.type === 'private' && previousStore && runtime.currentStore &&
+          previousStore.id === runtime.currentStore.id && previousCoaches && previousCoaches.length) {
+        pageData = { ...pageData, coaches: previousCoaches }
+      }
+    }
 
     this.setData({
       runtime,
@@ -149,6 +159,7 @@ Page(withPageState({
         userId: app.globalData.userProfile.id,
         storeId: runtime.currentStore.id,
         filters: this.data.filters,
+        includeScheduleDates: false,
       })
       if (this._syncRequestId !== requestId) {
         return
@@ -164,22 +175,17 @@ Page(withPageState({
         return
       }
       this.setData({ pageError: getUserMessage(error, "加载失败，请重试") })
-      const runtime = app.getRuntimeSnapshot()
-      this.setData({
-        runtime,
-        pageData: decorateBookingPageData(app.getBookingPageData(this.data.filters), this.data.filters, this.data.coachKeyword, this.data.coachOptionsLimit),
-      })
+      this.hydratePageData(app.getRuntimeSnapshot())
     }
   },
 
   onTypeChange(event) {
-    this.setData({
-      filters: Object.assign({}, this.data.filters, {
-        type: event.currentTarget.dataset.type,
-      }),
-    }, () => {
-      this.syncPageData()
-    })
+    const type = event.currentTarget.dataset.type
+    const filters = this.data.filters
+    if (type === filters.type || this.data.privateSubmitting) return
+    if (filters.type === 'private') this._privateCoachId = filters.coachId
+    const coachId = type === 'private' ? this._privateCoachId || 'all' : 'all'
+    this.setData({ filters: { ...filters, type, coachId }, coachPickerVisible: false }, () => this.syncPageData())
   },
 
   onOpenStorePicker() {
@@ -189,12 +195,8 @@ Page(withPageState({
     } })
   },
 
-  onResetFilters() {
-    this.setData({ filters: { type: this.data.filters.type, coachId: 'all', dateKey: buildNextSevenDays()[0].key } }, () => this.syncPageData())
-  },
-
   onOpenCoachPicker() {
-    if (this.data.filters.type === 'private' && (this.data.privatePending || this.data.privateSubmitting)) return
+    if (this.data.filters.type !== 'private' || this.data.privatePending || this.data.privateSubmitting) return
     this.setData({
       coachPickerVisible: true,
       coachOptionsLimit: 20,
@@ -226,12 +228,8 @@ Page(withPageState({
     this.setData({ coachOptionsLimit: limit, pageData: decorateBookingPageData(this.data.pageData, this.data.filters, this.data.coachKeyword, limit) })
   },
 
-  onCoachOptionTap(event) {
-    if (this.data.filters.type === 'private') this.onOpenCoachProfile(event)
-    else this.onCoachChange(event)
-  },
-
   onOpenCoachProfile(event) {
+    if (this.data.privateSubmitting) return
     const coachId = event.currentTarget.dataset.coachId
     if (coachId) {
       this.onCloseCoachPicker()
@@ -239,8 +237,24 @@ Page(withPageState({
     }
   },
 
+  onChangeCoach() {
+    if (this.data.filters.type !== 'private' || this.data.privatePending || this.data.privateSubmitting) return
+    const filters = { ...this.data.filters, coachId: 'all' }
+    const pageData = { ...this.data.pageData, privateBusyTimes: [] }
+    this._syncRequestId = (this._syncRequestId || 0) + 1
+    this.setData({
+      filters,
+      coachPickerVisible: false,
+      coachKeyword: '',
+      coachOptionsLimit: 20,
+      pageBusy: false,
+      pageError: '',
+      pageData: decorateBookingPageData(pageData, filters, ''),
+    })
+  },
+
   onCoachChange(event) {
-    if (this.data.filters.type === 'private' && (this.data.privatePending || this.data.privateSubmitting)) return
+    if (this.data.filters.type !== 'private' || this.data.privatePending || this.data.privateSubmitting) return
     this.setData({
       filters: Object.assign({}, this.data.filters, {
         coachId: event.currentTarget.dataset.coachId,
@@ -253,6 +267,7 @@ Page(withPageState({
   },
 
   onDateChange(event) {
+    if (this.data.filters.type === 'private' && this.data.privateSubmitting) return
     this.setData({
       filters: Object.assign({}, this.data.filters, {
         dateKey: event.currentTarget.dataset.dateKey,

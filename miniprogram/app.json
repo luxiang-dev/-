@@ -5,6 +5,8 @@
     "pages/booking/index",
     "pages/profile/index",
     "pages/points/index",
+    "pages/mall/index",
+    "pages/admin/gifts/index",
     "pages/bookings/index",
     "pages/workspace/index",
     "pages/workspace/distribute/index",

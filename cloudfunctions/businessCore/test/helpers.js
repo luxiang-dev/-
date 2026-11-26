@@ -4,7 +4,7 @@ const path = require('node:path')
 const vm = require('node:vm')
 
 const source = readFileSync(path.join(__dirname, '..', 'index.js'), 'utf8')
-const collectionNames = ['app_user', 'biz_store', 'biz_package', 'user_asset', 'user_asset_log', 'biz_class_schedule', 'biz_booking', 'user_invite_code', 'user_point_log']
+const collectionNames = ['app_user', 'biz_store', 'biz_package', 'user_asset', 'user_asset_log', 'biz_class_schedule', 'biz_booking', 'user_invite_code', 'user_point_log', 'point_gift', 'point_redemption']
 
 function createDatabase() {
   const collections = new Map()
@@ -17,7 +17,11 @@ function createDatabase() {
 
   function query(name, where = {}, offset = 0, size = Infinity, orders = []) {
     function rows() {
-      return [...getRecords(name).values()].filter((doc) => Object.entries(where).every(([key, value]) => value && value.valuesIn ? value.valuesIn.includes(doc[key]) : doc[key] === value)).sort((a, b) => {
+      return [...getRecords(name).values()].filter(doc => Object.entries(where).every(([key, value]) => {
+        if (value && value.range) return doc[key] >= value.min && doc[key] <= value.max
+        if (value && value.valuesIn) return value.valuesIn.includes(doc[key])
+        return doc[key] === value
+      })).sort((a, b) => {
         for (const [key, direction] of orders) { const compare = a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0; if (compare) return direction === 'desc' ? -compare : compare }
         return 0
       })
@@ -64,7 +68,7 @@ function createDatabase() {
   }
 
   state.db = {
-    command: { inc: (increment) => ({ increment }), in: valuesIn => ({ valuesIn }) },
+    command: { gte: min => ({ and: upper => ({ range: true, min, max: upper.max }) }), lte: max => ({ max }), inc: (increment) => ({ increment }), in: valuesIn => ({ valuesIn }) },
     serverDate: () => new Date(),
     createCollection: async (name) => {
       state.createCalls += 1
@@ -112,6 +116,7 @@ function loadFunction(state, env = {}, context = { OPENID: 'real-openid', ENV: '
       if (name === 'wx-server-sdk') return cloud
       if (name === 'crypto') return require('node:crypto')
       if (name === './coach-profile') return require('../coach-profile')
+      if (name === './points-mall') return require('../points-mall')
       if (name === './store-gallery') return require('../store-gallery')
       if (name === './reports') return require('../reports')
       if (name === './entitlements') return require('../entitlements')

@@ -19,6 +19,7 @@
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
     "compileHotReLoad": false,
+    "ignoreDevUnusedFiles": false,
     "useMultiFrameRuntime": true,
     "useApiHook": true,
     "useApiHostProcess": true,

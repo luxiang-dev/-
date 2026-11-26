@@ -55,6 +55,23 @@ test('游客可浏览场次，伪造用户 ID 不能获取余额或预约记录'
   assert.equal((await main({ action: 'getProfileViewData', payload: { userId: 'victim' } })).code, 'LOGIN_REQUIRED')
 })
 
+test('按日预约查询保留当前场次和教练跨店占用，旧客户端仍能获取全部排课日期', async () => {
+  const { main, state, id } = await fixture(2)
+  const schedules = state.collections.get('biz_class_schedule')
+  const slot = schedules.get('slot')
+  const day = slot.start_time.slice(0, 10)
+  schedules.set('other-store', { ...slot, _id: 'other-store', store_id: 'other' })
+  schedules.set('later', { ...slot, _id: 'later', start_time: '2099-12-01 10:00:00' })
+  const read = (filters, extra = {}) => main({ action: 'getBookingViewData', payload: { storeId: 'gaoxin', filters, ...extra } })
+  const filters = { type: 'group', dateKey: day, coachId: id }
+  const today = await read(filters, { includeScheduleDates: false })
+  assert.deepEqual(Array.from(today.data.schedules, row => row.id), ['slot'])
+  assert.deepEqual(Array.from(today.data.dates, row => row.key), [day])
+  assert.equal((await read(filters)).data.dates.length, 2)
+  const privateView = await read({ ...filters, type: 'private' }, { includeScheduleDates: false })
+  assert.deepEqual(Array.from(privateView.data.privateBusyTimes, row => row.id).sort(), ['other-store', 'slot'])
+})
+
 test('客户不能通过伪造操作人进入派课、排课或核销流程', async () => {
   const { main } = await fixture()
   for (const action of ['distributeAsset', 'writeOffBooking', 'createCoachSchedule', 'getAdminDashboardData']) {

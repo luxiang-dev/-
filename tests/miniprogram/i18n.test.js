@@ -145,8 +145,10 @@ test('全部页面接入WXS并传递语言，语言设置对游客可用，登�
     assert.match(source, /<wxs module="i18n"/)
     if (name !== 'pages/login/index') assert.match(source, /page-feedback language="\{\{language\}\}"/)
   }
-  const profile = fs.readFileSync(path.join(root, 'pages/profile/index.wxml'), 'utf8')
-  assert.ok(profile.indexOf('<language-setting') < profile.indexOf('runtime.isAuthenticated'))
+  const { html } = require('../../tools/preview-miniprogram')
+  for (const query of ['state=guest', '']) {
+    assert.match(html('profile', new URLSearchParams(query)), /class="language-setting"/)
+  }
   assert.doesNotMatch(fs.readFileSync(path.join(root, 'pages/login/index.wxml'), 'utf8'), /invite-input|onBindInvite/)
 })
 
@@ -156,4 +158,16 @@ test('教练资料及图片操作的全部新文案在六种外语中均完整�
     assert.notEqual(text.translate(source, language), source, source + ' ' + language)
     if (language !== 'ja') assert.doesNotMatch(text.translate(source, language), /[\u3400-\u9fff]/, source + ' ' + language)
   } }
+})
+
+test('压缩词表的1355条译文及复合提示在JS与WXS中一致',()=>{
+ const js={module:{exports:{}}},wxs={module:{exports:{}},String:undefined}
+ vm.runInNewContext(fs.readFileSync(path.join(root,'utils/i18n-text.js'),'utf8'),js)
+ vm.runInNewContext(fs.readFileSync(path.join(root,'utils/i18n.wxs'),'utf8'),wxs)
+ const sources=Object.keys(js.catalog).concat(['请求超时，请检查网络后重试；结果尚未确认，请先刷新记录核对，勿重复提交','剩余 12 件'])
+ assert.ok(sources.length>=1355)
+ for(const language of languages)for(const source of sources){
+  assert.equal(js.module.exports.translate(source,language),wxs.module.exports.t(source,language),source+' '+language)
+  assert.equal(js.module.exports.format(source,['客户原名',19],language),wxs.module.exports.f(source,['客户原名',19],language),source+' '+language)
+ }
 })

@@ -31,6 +31,9 @@ const CODE_MESSAGES = {
   INVALID_CREATE_PACKAGE_PAYLOAD: '请核对套餐名称、类型、课时、金额和上架状态',
 }
 const OPERATION_MESSAGES = {
+  MALL_VIEW_ERROR:'积分资料暂时无法读取，请稍后重试', GIFT_MANAGE_ERROR:'积分资料暂时无法读取，请稍后重试',
+  SAVE_GIFT_ERROR:'礼品未能保存，请核对礼品列表后重试', REDEEM_GIFT_ERROR:'兑换未完成，请核对兑换记录后重试',
+  HANDLE_REDEMPTION_ERROR:'领取状态未能更新，请刷新兑换记录后重试', SAVE_POINTS_RULE_ERROR:'返积分比例未能保存，请刷新后核对',
   COACH_PROFILE_ERROR: '资料保存未完成，请刷新后核对',
   CREATE_PRIVATE_BOOKING_ERROR: '专属预约未完成，请刷新后核对教练和时间',
   CUSTOMER_FOLLOWUP_ERROR: '跟进与报表资料暂时无法读取，请稍后重试',

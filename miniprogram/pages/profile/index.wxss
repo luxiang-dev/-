@@ -335,7 +335,12 @@
 }
 
 .logout-card {
-  margin-bottom: 48rpx;
+  margin-bottom: 24rpx;
+}
+
+.profile-page language-setting {
+  display: block;
+  margin-top: 22rpx;
 }
 
 .logout-button {
@@ -371,7 +376,7 @@
 
 /* 档案卡保留真实资料，背景仅提供训练氛围。 */
 .profile-page { background: linear-gradient(155deg, #eceee6 0, #f5f4ef 640rpx); }
-.profile-hero { position: relative; overflow: hidden; padding: 34rpx 28rpx; border: 1rpx solid #3d493e; border-radius: 26rpx; background: #233027; box-shadow: 0 16rpx 36rpx rgba(24,35,27,.12); }
+.profile-hero { position: relative; overflow: hidden; padding: 24rpx; border: 1rpx solid #3d493e; border-radius: 26rpx; background: #233027; box-shadow: 0 16rpx 36rpx rgba(24,35,27,.12); }
 .profile-hero-photo,.profile-hero-shade { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 .profile-hero-shade { background: linear-gradient(90deg,rgba(20,30,23,.97),rgba(20,30,23,.91) 55%,rgba(20,30,23,.72)); }
 .profile-avatar-block,.profile-hero-main { position: relative; z-index: 1; }

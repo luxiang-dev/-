@@ -30,7 +30,7 @@ test('微信原生 WXS 运行时完整显示七种语言的静态文本、参数
     fs.writeFileSync(path.join(folder, 'fixture.wxml'), '<wxs module="i18n" src="./i18n.wxs" /><view wx:for="{{cases}}" wx:key="source">{{i18n.f(item.source, item.values, language)}}</view><view>{{i18n.t(status, language)}}</view><view wx:for="{{i18n.list(options, \'label\', language)}}" wx:key="value">{{item.label}}</view>')
     const { context, errors } = compiledRuntime(['fixture.wxml', 'i18n.wxs'], folder)
     const render = context.$gwx('fixture.wxml')
-    const sources = JSON.parse(fs.readFileSync(path.join(root, 'miniprogram/locales/zh-ui.json'), 'utf8'))
+    const sources = JSON.parse(fs.readFileSync(path.join(root, 'miniprogram/locales/zh-ui.json'), 'utf8')).concat(fs.readFileSync(path.join(root,'miniprogram/locales/points-mall.tsv'),'utf8').trim().split(/\r?\n/).map(row=>row.split('|')[0]))
     for (const language of languages) {
       // 创建数据于编译器同一上下文，模拟小程序的数据桥接。
       context.input = JSON.stringify({ language, cases: sources.map(source => ({ source, values: [19, '陈客户', '测试课程', '门店原名'] })), status: '已预约', options: [{ label: '现金', value: 'cash' }, { label: '微信', value: 'wechat' }] })
@@ -74,7 +74,7 @@ test('所有页面的实际微信编译渲染在七种语言及表单状态下�
   const files = pageNames.map(page => 'miniprogram/pages/' + page + '/index.wxml')
   files.push('miniprogram/utils/i18n.wxs')
   const { context, errors } = compiledRuntime(files, root)
-  for (const page of pageNames) for (const language of languages) for (const query of ['', 'popup=1&expanded=1&invite=form', 'state=guest', 'popup=assets', 'mode=records', 'mode=records&popup=1', 'state=cancelled', 'mode=report', 'mode=report&state=empty', 'type=private&coach=coach&unlimited=1', 'type=private&state=pending', 'popup=1&unlimited=1&step=3', 'section=intro', 'section=photos&photos=1', 'type=private&many=1&expanded=1', 'popup=gallery', 'popup=gallery&state=empty', 'popup=gallery&state=error', 'popup=stores&distance=1', 'popup=stores&state=denied', 'popup=store-detail&distance=1', 'popup=store-detail&state=missing']) {
+  for (const page of pageNames) for (const language of languages) for (const query of ['tab=records','tab=rule','editing=1','photos=1','editing=1&photos=1','editing=1&state=upload-error','editing=1&state=uploading','mixed=1', '', 'popup=1&expanded=1&invite=form', 'state=guest', 'popup=assets', 'mode=records', 'mode=records&popup=1', 'state=cancelled', 'mode=report', 'mode=report&state=empty', 'type=private&coach=coach&unlimited=1', 'type=private&state=pending', 'popup=1&unlimited=1&step=3', 'section=intro', 'section=photos&photos=1', 'type=private&many=1&expanded=1', 'popup=gallery', 'popup=gallery&state=empty', 'popup=gallery&state=error', 'popup=stores&distance=1', 'popup=stores&state=denied', 'popup=store-detail&distance=1', 'popup=store-detail&state=missing']) {
     const data = fixtures(page, new URLSearchParams(query))
     data.language = language
     context.input = JSON.stringify(data)

@@ -1,0 +1,77 @@
+积分商城|Rewards shop|Boutique de points|ร้านแลกคะแนน|Punkteshop|ポイントショップ|पॉइंट्स स्टोर
+积分|points|points|คะแนน|Punkte|ポイント|पॉइंट्स
+兑换好礼，到店领取|Redeem gifts, collect in store|Échangez vos points, retirez en salle|แลกของรางวัลและรับที่สาขา|Prämien einlösen, vor Ort abholen|交換した特典は店舗で受け取り|उपहार बदलें, स्टोर से लें
+上次兑换结果待确认，请先核对。|Please check your last redemption first.|Vérifiez d’abord votre dernier échange.|โปรดตรวจสอบการแลกครั้งก่อน|Bitte zuerst die letzte Einlösung prüfen.|前回の交換結果を先に確認してください。|पहले पिछले एक्सचेंज का परिणाम जाँचें।
+核对上次兑换|Check last redemption|Vérifier le dernier échange|ตรวจสอบการแลกครั้งก่อน|Letzte Einlösung prüfen|前回の交換を確認|पिछला एक्सचेंज जाँचें
+可兑换礼品|Available gifts|Cadeaux disponibles|ของรางวัลที่แลกได้|Verfügbare Prämien|交換できる特典|उपलब्ध उपहार
+兑换记录|Redemption history|Historique des échanges|ประวัติการแลก|Einlösungen|交換履歴|एक्सचेंज इतिहास
+暂无可兑换礼品|No gifts available|Aucun cadeau disponible|ยังไม่มีของรางวัล|Keine Prämien verfügbar|交換できる特典はありません|अभी कोई उपहार उपलब्ध नहीं
+剩余 {0} 件|{0} remaining|{0} restants|เหลือ {0} ชิ้น|{0} verfügbar|残り{0}個|{0} बाकी
+已兑完|Sold out|Épuisé|แลกหมดแล้ว|Vergriffen|在庫なし|स्टॉक खत्म
+积分不足|Not enough points|Points insuffisants|คะแนนไม่พอ|Zu wenige Punkte|ポイント不足|पॉइंट्स अपर्याप्त
+兑换礼品|Redeem gift|Échanger un cadeau|แลกของรางวัล|Prämie einlösen|特典を交換|उपहार बदलें
+暂无兑换记录|No redemptions yet|Aucun échange|ยังไม่มีประวัติการแลก|Noch keine Einlösungen|交換履歴はありません|अभी कोई एक्सचेंज नहीं
+待领取|Awaiting collection|À retirer|รอรับของ|Abholung ausstehend|受け取り待ち|लेना बाकी
+已领取|Collected|Retiré|รับแล้ว|Abgeholt|受け取り済み|ले लिया
+显示最近50条兑换记录|Latest 50 redemptions|50 derniers échanges|แสดง 50 รายการล่าสุด|Letzte 50 Einlösungen|最新50件の交換履歴|पिछले 50 एक्सचेंज
+积分礼品管理|Rewards management|Gestion des récompenses|จัดการของรางวัล|Prämienverwaltung|特典管理|रिवॉर्ड प्रबंधन
+礼品管理|Gifts|Cadeaux|ของรางวัล|Prämien|特典|उपहार
+积分规则|Points rules|Règles des points|กติกาคะแนน|Punkteregeln|ポイントルール|पॉइंट्स नियम
+消费返积分比例|Referral points rate|Taux de points de parrainage|อัตราคะแนนจากการใช้จ่าย|Empfehlungs-Prämiensatz|紹介ポイント還元率|रेफरल पॉइंट्स दर
+绑定不赠积分，仅实收消费返积分给邀请人。每笔向下取整，新比例只影响后续消费。|Binding gives no points. Referrers earn points on actual payments, rounded down per payment. Rate changes apply to future payments.|L’association ne donne aucun point. Le parrain gagne des points sur les paiements réels, arrondis à l’entier inférieur. Le nouveau taux s’applique aux futurs paiements.|ผูกโค้ดไม่ได้คะแนน ผู้เชิญรับคะแนนจากยอดชำระจริง ปัดลงแต่ละรายการ อัตราใหม่ใช้กับการชำระในอนาคต|Die Codebindung gibt keine Punkte. Empfehlende erhalten Punkte auf tatsächliche Zahlungen, je Zahlung abgerundet. Neue Sätze gelten für künftige Zahlungen.|コード登録ではポイントは付与されません。実際の支払額に応じて紹介者に還元し、支払いごとに切り捨てます。新しい率は今後の支払いに適用されます。|कोड जोड़ने पर पॉइंट्स नहीं मिलते। वास्तविक भुगतान पर आमंत्रक को पॉइंट्स मिलते हैं, हर भुगतान पर पूर्णांक नीचे की ओर। नई दर आगे के भुगतानों पर लागू होगी।
+0至100，最多两位小数|0–100, up to two decimal places|0–100, deux décimales maximum|0–100 ทศนิยมไม่เกินสองตำแหน่ง|0–100, höchstens zwei Dezimalstellen|0〜100、小数点以下2桁まで|0–100, अधिकतम दो दशमलव अंक
+新增礼品|Add gift|Ajouter un cadeau|เพิ่มของรางวัล|Prämie hinzufügen|特典を追加|उपहार जोड़ें
+礼品资料|Gift details|Détails du cadeau|รายละเอียดของรางวัล|Prämiendetails|特典情報|उपहार विवरण
+礼品名称|Gift name|Nom du cadeau|ชื่อของรางวัล|Prämienname|特典名|उपहार का नाम
+礼品介绍|Description|Description|คำอธิบาย|Beschreibung|特典の説明|विवरण
+兑换积分|Points cost|Coût en points|คะแนนที่ใช้|Punktekosten|必要ポイント|आवश्यक पॉइंट्स
+剩余库存|Available stock|Stock disponible|จำนวนคงเหลือ|Verfügbarer Bestand|残り在庫|शेष स्टॉक
+上架|Available|Disponible|เปิดให้แลก|Verfügbar|公開|उपलब्ध
+保存礼品|Save gift|Enregistrer le cadeau|บันทึกของรางวัล|Prämie speichern|特典を保存|उपहार सहेजें
+编辑礼品|Edit gift|Modifier le cadeau|แก้ไขของรางวัล|Prämie bearbeiten|特典を編集|उपहार बदलें
+保存积分规则|Save points rules|Enregistrer les règles|บันทึกกติกาคะแนน|Punkteregeln speichern|ポイントルールを保存|पॉइंट्स नियम सहेजें
+绑定邀请码|Link referral code|Associer un code|ผูกโค้ดเชิญ|Einladungscode verknüpfen|招待コードを登録|आमंत्रण कोड जोड़ें
+绑定不赠积分。绑定后，你的消费按返积分比例计入邀请人积分。每人限绑定一次。|No points for linking. Your future payments earn points for your referrer at the configured rate. One code per person.|Aucun point à l’association. Vos futurs paiements donnent des points au parrain selon le taux défini. Un code par personne.|ผูกโค้ดไม่ได้คะแนน การชำระหลังผูกให้คะแนนผู้เชิญตามอัตราที่กำหนด ผูกได้ครั้งเดียว|Keine Punkte für die Verknüpfung. Künftige Zahlungen geben der einladenden Person Punkte zum festgelegten Satz. Ein Code pro Person.|登録時のポイント付与はありません。登録後の支払いで設定率に応じて紹介者にポイントが付きます。登録は1人1回です。|कोड जोड़ने पर पॉइंट्स नहीं मिलते। बाद के भुगतानों पर तय दर से आमंत्रक को पॉइंट्स मिलते हैं। प्रति व्यक्ति एक कोड।
+已绑定 {0}|Linked: {0}|Associé : {0}|ผูกแล้ว: {0}|Verknüpft: {0}|登録済み：{0}|जुड़ा: {0}
+好友消费返积分比例：{0}%|Referral points rate: {0}%|Taux de parrainage : {0}%|อัตราคะแนนจากเพื่อน: {0}%|Empfehlungs-Prämiensatz: {0}%|紹介ポイント還元率：{0}%|रेफरल पॉइंट्स दर: {0}%
+绑定不赠积分，好友实收消费按比例返积分，每笔向下取整。绑定后不可更换。积分可兑换礼品。|Linking gives no points. Earn points on your friends’ actual payments, rounded down per payment. Linked codes cannot be changed. Redeem points for gifts.|Aucun point à l’association. Les paiements réels de vos amis donnent des points, arrondis à l’entier inférieur. Le code associé est définitif. Échangez les points contre des cadeaux.|ผูกโค้ดไม่ได้คะแนน รับคะแนนตามยอดชำระจริงของเพื่อน ปัดลงแต่ละรายการ ผูกแล้วเปลี่ยนไม่ได้ คะแนนแลกของรางวัลได้|Die Verknüpfung gibt keine Punkte. Zahlungen von Freunden bringen anteilige Punkte, je Zahlung abgerundet. Verknüpfte Codes bleiben bestehen. Punkte sind für Prämien einlösbar.|登録時のポイント付与はありません。友達の実際の支払いに応じて還元し、毎回切り捨てます。コードは変更できません。ポイントは特典に交換できます。|कोड जोड़ने पर पॉइंट्स नहीं मिलते। दोस्तों के वास्तविक भुगतान पर दर के अनुसार पॉइंट्स मिलते हैं, हर बार नीचे की ओर पूर्णांक। जुड़ा कोड नहीं बदल सकता। पॉइंट्स से उपहार लें।
+上架礼品、确认领取与设置返积分比例|Publish gifts, confirm collection and set points rate|Publier des cadeaux, confirmer le retrait et définir le taux|เพิ่มของรางวัล ยืนยันรับของ และตั้งอัตราคะแนน|Prämien veröffentlichen, Abholung bestätigen und Satz festlegen|特典の公開・受け取り確認・還元率設定|उपहार उपलब्ध करें, प्राप्ति पुष्टि और दर तय करें
+好友消费返积分|Referral purchase points|Points sur achat parrainé|คะแนนจากการใช้จ่ายของเพื่อน|Punkte für geworbene Käufe|友達の購入による還元|रेफरल खरीद पॉइंट्स
+消费撤销扣回积分|Purchase reversal|Annulation de points d’achat|หักคะแนนจากการยกเลิกยอดชำระ|Punkterücknahme bei Storno|購入取消によるポイント返還|खरीद रद्द पर पॉइंट्स वापसी
+礼品兑换|Gift redemption|Échange de cadeau|แลกของรางวัล|Prämieneinlösung|特典交換|उपहार एक्सचेंज
+兑换取消返还积分|Cancelled redemption refund|Remboursement d’échange annulé|คืนคะแนนเมื่อยกเลิกการแลก|Punkteerstattung nach Storno|交換取消のポイント返還|एक्सचेंज रद्द पर पॉइंट्स वापसी
+返积分比例须为0至100，最多两位小数|Enter a rate from 0 to 100, with up to two decimal places.|Saisissez un taux de 0 à 100, avec deux décimales maximum.|กรอกอัตรา 0 ถึง 100 ทศนิยมไม่เกินสองตำแหน่ง|Satz von 0 bis 100 mit höchstens zwei Dezimalstellen eingeben.|0〜100、小数点以下2桁以内で入力してください。|0 से 100 तक दर दें, अधिकतम दो दशमलव अंक।
+返积分比例已变化，请刷新|The rate changed. Please refresh.|Le taux a changé. Actualisez.|อัตราเปลี่ยนแล้ว โปรดรีเฟรช|Der Satz hat sich geändert. Bitte aktualisieren.|還元率が変更されました。更新してください。|दर बदल गई। रीफ्रेश करें।
+返积分比例已保存|Points rate saved|Taux enregistré|บันทึกอัตราคะแนนแล้ว|Punktesatz gespeichert|還元率を保存しました|पॉइंट्स दर सहेजी गई
+请填写礼品名称、有效积分和库存|Enter a gift name, valid points cost and stock.|Saisissez le nom, le coût et le stock valides.|กรอกชื่อ คะแนน และจำนวนคงเหลือให้ถูกต้อง|Prämienname, gültige Punktekosten und Bestand eingeben.|特典名・必要ポイント・在庫を正しく入力してください。|उपहार नाम, सही पॉइंट्स लागत और स्टॉक दें।
+请求内容已变化，请刷新礼品|Request changed. Refresh the gift.|La demande a changé. Actualisez le cadeau.|ข้อมูลเปลี่ยนแล้ว โปรดรีเฟรชของรางวัล|Anfrage geändert. Prämie aktualisieren.|内容が変更されました。特典を更新してください。|अनुरोध बदला है। उपहार रीफ्रेश करें।
+礼品不存在，请刷新|Gift not found. Refresh.|Cadeau introuvable. Actualisez.|ไม่พบของรางวัล โปรดรีเฟรช|Prämie nicht gefunden. Aktualisieren.|特典が見つかりません。更新してください。|उपहार नहीं मिला। रीफ्रेश करें।
+礼品或库存已变化，请刷新后编辑|Gift or stock changed. Refresh before editing.|Le cadeau ou le stock a changé. Actualisez avant de modifier.|ของรางวัลหรือจำนวนเปลี่ยนแล้ว โปรดรีเฟรชก่อนแก้ไข|Prämie oder Bestand geändert. Vor dem Bearbeiten aktualisieren.|特典または在庫が変更されました。更新してから編集してください。|उपहार या स्टॉक बदला। बदलने से पहले रीफ्रेश करें।
+请求内容已变化，请查看兑换记录|Request changed. Check redemption history.|La demande a changé. Consultez les échanges.|ข้อมูลเปลี่ยนแล้ว โปรดดูประวัติการแลก|Anfrage geändert. Einlösungen prüfen.|内容が変更されました。交換履歴を確認してください。|अनुरोध बदला। एक्सचेंज इतिहास देखें।
+礼品或库存已变化，请刷新后兑换|Gift or stock changed. Refresh before redeeming.|Le cadeau ou le stock a changé. Actualisez avant l’échange.|ของรางวัลหรือจำนวนเปลี่ยนแล้ว โปรดรีเฟรชก่อนแลก|Prämie oder Bestand geändert. Vor der Einlösung aktualisieren.|特典または在庫が変更されました。更新してから交換してください。|उपहार या स्टॉक बदला। एक्सचेंज से पहले रीफ्रेश करें।
+积分不足，无法兑换此礼品|Not enough points for this gift.|Points insuffisants pour ce cadeau.|คะแนนไม่พอสำหรับของรางวัลนี้|Zu wenige Punkte für diese Prämie.|この特典の交換に必要なポイントが不足しています。|इस उपहार के लिए पर्याप्त पॉइंट्स नहीं हैं।
+兑换成功，请到店领取|Redeemed. Collect your gift in store.|Échange réussi. Retirez le cadeau en salle.|แลกสำเร็จ โปรดรับที่สาขา|Eingelöst. Prämie vor Ort abholen.|交換完了。店舗でお受け取りください。|एक्सचेंज सफल। स्टोर से उपहार लें।
+兑换记录不存在，请刷新|Redemption not found. Refresh.|Échange introuvable. Actualisez.|ไม่พบรายการแลก โปรดรีเฟรช|Einlösung nicht gefunden. Aktualisieren.|交換記録が見つかりません。更新してください。|एक्सचेंज नहीं मिला। रीफ्रेश करें।
+兑换记录已处理，请刷新|Redemption already processed. Refresh.|Échange déjà traité. Actualisez.|รายการแลกดำเนินการแล้ว โปรดรีเฟรช|Einlösung bereits bearbeitet. Aktualisieren.|交換記録は処理済みです。更新してください。|एक्सचेंज पहले ही निपटाया गया। रीफ्रेश करें।
+请先核对上次保存的礼品|Check the last gift save first.|Vérifiez d’abord le dernier enregistrement.|โปรดตรวจสอบการบันทึกของรางวัลครั้งก่อน|Zuerst die letzte Prämienspeicherung prüfen.|前回の特典保存結果を先に確認してください。|पहले पिछला उपहार सहेजना जाँचें।
+请确认客户已领取礼品。|Confirm the customer has collected the gift.|Confirmez que le client a retiré le cadeau.|ยืนยันว่าลูกค้ารับของรางวัลแล้ว|Bestätigen, dass der Kunde die Prämie abgeholt hat.|お客様が特典を受け取ったことを確認してください。|पुष्टि करें कि ग्राहक ने उपहार लिया है।
+使用 {0} 积分，到店领取。|Use {0} points. Collect in store.|Utiliser {0} points. Retrait en salle.|ใช้ {0} คะแนน รับที่สาขา|{0} Punkte verwenden. Vor Ort abholen.|{0}ポイントを使用。店舗で受け取り。|{0} पॉइंट्स इस्तेमाल करें। स्टोर से लें।
+取消兑换|Cancel redemption|Annuler l’échange|ยกเลิกการแลก|Einlösung stornieren|交換を取り消す|एक्सचेंज रद्द करें
+填写取消原因|Enter cancellation reason|Saisir le motif d’annulation|กรอกเหตุผลการยกเลิก|Stornogrund eingeben|取消理由を入力|रद्द करने का कारण दें
+确认发放|Confirm collection|Confirmer le retrait|ยืนยันรับของ|Abholung bestätigen|受け取りを確認|प्राप्ति की पुष्टि करें
+礼品已保存|Gift saved|Cadeau enregistré|บันทึกของรางวัลแล้ว|Prämie gespeichert|特典を保存しました|उपहार सहेजा गया
+已确认发放|Collection confirmed|Retrait confirmé|ยืนยันรับของแล้ว|Abholung bestätigt|受け取り確認済み|प्राप्ति की पुष्टि हुई
+兑换已取消，积分已退回|Cancelled. Points refunded.|Échange annulé, points remboursés.|ยกเลิกแล้ว คืนคะแนนแล้ว|Storniert. Punkte erstattet.|交換を取り消し、ポイントを返還しました。|रद्द हुआ। पॉइंट्स लौटाए गए।
+礼品已下架，请选择其他礼品|Gift unavailable. Choose another.|Cadeau indisponible. Choisissez-en un autre.|ของรางวัลไม่เปิดให้แลก โปรดเลือกอื่น|Prämie nicht verfügbar. Andere wählen.|この特典は非公開です。別の特典を選んでください。|उपहार उपलब्ध नहीं। दूसरा चुनें।
+礼品已兑完，请选择其他礼品|Gift out of stock. Choose another.|Cadeau épuisé. Choisissez-en un autre.|ของรางวัลหมดแล้ว โปรดเลือกอื่น|Prämie vergriffen. Andere wählen.|この特典は在庫切れです。別の特典を選んでください。|उपहार का स्टॉक खत्म। दूसरा चुनें।
+请选择兑换记录，取消须填写原因|Select a redemption and enter a reason to cancel.|Sélectionnez un échange et un motif d’annulation.|เลือกรายการแลกและกรอกเหตุผลยกเลิก|Einlösung wählen und Stornogrund eingeben.|交換記録を選択し、取消理由を入力してください。|एक्सचेंज चुनें और रद्द करने का कारण दें।
+请选择有效礼品|Select a valid gift|Sélectionnez un cadeau valide|เลือกของรางวัลที่ถูกต้อง|Gültige Prämie wählen|有効な特典を選択してください|सही उपहार चुनें
+请查看兑换记录|Check redemption history|Consultez l’historique des échanges|ดูประวัติการแลก|Einlösungen prüfen|交換履歴を確認してください|एक्सचेंज इतिहास देखें
+核对上次派发|Check last grant|Vérifier le dernier crédit|ตรวจสอบการมอบครั้งก่อน|Letzte Gutschrift prüfen|前回の付与を確認|पिछला आवंटन जाँचें
+礼品未能保存，请核对礼品列表后重试|Gift not saved. Check the gift list before retrying.|Cadeau non enregistré. Vérifiez la liste avant de réessayer.|บันทึกไม่สำเร็จ ตรวจสอบรายการก่อนลองใหม่|Prämie nicht gespeichert. Liste prüfen, dann erneut versuchen.|特典を保存できませんでした。一覧を確認して再試行してください。|उपहार नहीं सहेजा गया। सूची जाँचकर फिर प्रयास करें।
+兑换未完成，请核对兑换记录后重试|Redemption incomplete. Check history before retrying.|Échange incomplet. Vérifiez l’historique avant de réessayer.|แลกไม่สำเร็จ ตรวจสอบประวัติก่อนลองใหม่|Einlösung unvollständig. Verlauf prüfen, dann erneut versuchen.|交換を完了できませんでした。履歴を確認して再試行してください。|एक्सचेंज पूरा नहीं हुआ। इतिहास जाँचकर फिर प्रयास करें।
+领取状态未能更新，请刷新兑换记录后重试|Collection status not updated. Refresh redemptions and retry.|Statut non mis à jour. Actualisez les échanges et réessayez.|อัปเดตสถานะไม่ได้ รีเฟรชรายการแล้วลองใหม่|Abholstatus nicht aktualisiert. Einlösungen aktualisieren und erneut versuchen.|受取状態を更新できませんでした。交換履歴を更新して再試行してください。|प्राप्ति स्थिति नहीं बदली। एक्सचेंज रीफ्रेश करके प्रयास करें।
+返积分比例未能保存，请刷新后核对|Rate not saved. Refresh and check.|Taux non enregistré. Actualisez et vérifiez.|บันทึกอัตราไม่ได้ รีเฟรชแล้วตรวจสอบ|Satz nicht gespeichert. Aktualisieren und prüfen.|還元率を保存できませんでした。更新して確認してください。|दर नहीं सहेजी गई। रीफ्रेश करके जाँचें।
+礼品图片|Gift photo|Photo du cadeau|รูปของรางวัล|Prämienfoto|特典の写真|उपहार की फोटो
+上传礼品图片|Upload gift photo|Importer une photo du cadeau|อัปโหลดรูปของรางวัล|Prämienfoto hochladen|特典の写真をアップロード|उपहार की फोटो अपलोड करें
+图片需保存礼品后公开展示|Save the gift to publish its photo.|Enregistrez le cadeau pour publier sa photo.|บันทึกของรางวัลเพื่อเผยแพร่รูป|Prämie speichern, um das Foto zu veröffentlichen.|特典を保存すると写真が公開されます。|फोटो दिखाने के लिए उपहार सहेजें।
